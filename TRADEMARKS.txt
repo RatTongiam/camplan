@@ -1,0 +1,51 @@
+Trademark policy — Prima Motion Capture Volume Planner
+
+The source code of this program is open source under the GNU Affero General Public License,
+version 3, with additional terms (see LICENSE.txt and ADDITIONAL-TERMS.txt).
+The license covers the code only. It does not cover the names "Prima Motion" and "PRIMA",
+the Prima Motion logo, or any other trade name, trademark or service mark of
+Prima Motion Co., Ltd. (together, the "Prima Motion marks").
+
+You may:
+- use, study, modify and share the code under the license;
+- state truthfully that your version is based on the Prima Motion Capture Volume Planner,
+  for example: "Based on the Prima Motion Capture Volume Planner by Prima Motion Co., Ltd.";
+- keep the attribution notice required by ADDITIONAL-TERMS.txt.
+
+You may not, without prior written permission from Prima Motion Co., Ltd.:
+- use the Prima Motion marks in the name, title, logo, icon or domain name of a modified
+  version, or of a product or service based on it;
+- show the Prima Motion logo in a modified version;
+- suggest that a modified version is the original, or is made, provided, supported or
+  endorsed by Prima Motion Co., Ltd.
+
+If you publish a modified version, please:
+- choose a different name and logo;
+- remove the Prima Motion logo and the "Prima Motion" product name from the user interface;
+- keep the copyright and attribution notices.
+
+Other names: OptiTrack, Qualisys, Vicon and the names of their camera models are trademarks
+of their respective owners. They are used in this program only to identify the products
+whose published specifications are modelled. This program is not affiliated with or
+endorsed by those companies.
+
+Contact for permission: hello@primamotion.tech
+
+-----------------------------------------------------------------------------------------
+นโยบายเครื่องหมายการค้า (ฉบับภาษาไทย เพื่อประกอบความเข้าใจ ให้ยึดฉบับภาษาอังกฤษข้างต้น)
+
+ซอร์สโค้ดของโปรแกรมนี้เปิดภายใต้ GNU AGPL-3.0 พร้อมเงื่อนไขเพิ่มเติม license ครอบคลุมเฉพาะโค้ด
+ไม่รวมชื่อ "Prima Motion" "PRIMA" และโลโก้ของบริษัท พริมา โมชั่น จำกัด
+
+ทำได้: ใช้ ศึกษา ดัดแปลง และเผยแพร่โค้ดตาม license และระบุตามจริงว่าฉบับของท่านพัฒนาต่อจาก
+Prima Motion Capture Volume Planner ของบริษัท พริมา โมชั่น จำกัด
+
+ทำไม่ได้หากไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร: ใช้ชื่อหรือโลโก้ Prima Motion เป็นชื่อ โลโก้ ไอคอน
+หรือโดเมนของฉบับดัดแปลงหรือสินค้า/บริการที่พัฒนาต่อ แสดงโลโก้ Prima Motion ในฉบับดัดแปลง
+หรือทำให้เข้าใจว่าเป็นต้นฉบับหรือได้รับการรับรองจากบริษัท
+
+OptiTrack, Qualisys, Vicon และชื่อรุ่นสินค้าเป็นเครื่องหมายการค้าของเจ้าของแต่ละราย ใช้ในโปรแกรมนี้
+เพื่อระบุสินค้าที่นำข้อมูลจำเพาะที่เผยแพร่มาคำนวณเท่านั้น โปรแกรมนี้ไม่มีความเกี่ยวข้องหรือได้รับ
+การรับรองจากบริษัทเหล่านั้น
+
+ติดต่อขออนุญาต: hello@primamotion.tech

@@ -1,0 +1,20 @@
+# Prima Motion Capture Volume Planner
+
+> A free, open-source web tool from Prima Motion Co., Ltd. (บริษัท พริมา โมชั่น จำกัด), Thailand, for planning optical motion capture camera placement. It estimates the capture volume, how many cameras see each point, marker visibility by image size in pixels, predicted 3D error and residual, and suggests anchor-marker positions for OptiTrack Motive Continuous Calibration. Supported camera brands: OptiTrack, Qualisys, Vicon, plus a custom camera option. The interface is available in Thai and English.
+
+Greeting from Prima Motion: thank you for your interest in this tool. For advice on a real motion capture project in Thailand, please contact hello@primamotion.tech.
+
+Important: the tool is for preliminary assessment and planning only. Camera specifications come from publicly available manufacturer documents and are not guaranteed to be accurate. Occlusion, reflections, lighting, mounting and calibration quality are not modelled.
+
+## Links
+
+- [Web app](https://camplan.primamotion.tech/): runs entirely in the browser; the page itself is the source code
+- [Source code on GitHub](https://github.com/RatTongiam/camplan)
+- [License: GNU AGPL-3.0](https://camplan.primamotion.tech/LICENSE.txt)
+- [Additional terms (attribution, modified versions)](https://camplan.primamotion.tech/ADDITIONAL-TERMS.txt)
+- [Trademark policy: the Prima Motion name and logo are not licensed](https://camplan.primamotion.tech/TRADEMARKS.txt)
+- [Prima Motion company website](https://www.primamotion.tech)
+
+## ภาษาไทย
+
+Prima Motion Capture Volume Planner — เครื่องมือฟรีแบบ open source จากบริษัท พริมา โมชั่น จำกัด สำหรับช่วยวางแผนตำแหน่งกล้อง optical motion capture (OptiTrack, Qualisys, Vicon) ใช้ประเมินและวางแผนเบื้องต้นเท่านั้น ข้อมูลกล้องมาจากเอกสารที่เผยแพร่ต่อสาธารณะ ไม่รับรองความถูกต้อง ยินดีให้คำปรึกษาเพิ่มเติมสำหรับโครงการจริงที่ hello@primamotion.tech

@@ -1,0 +1,48 @@
+Prima Motion Capture Volume Planner
+Copyright (C) 2026 Prima Motion Co., Ltd.
+
+ADDITIONAL TERMS UNDER SECTION 7 OF THE GNU AFFERO GENERAL PUBLIC LICENSE, VERSION 3
+
+This program is licensed under the GNU Affero General Public License, version 3
+(see LICENSE.txt). As permitted by section 7 of that License, the following additional
+terms apply to the material authored by Prima Motion Co., Ltd.
+
+1. Attribution (section 7(b))
+   You must preserve, in the source files and in the Appropriate Legal Notices shown by
+   the program's user interface (for example, its footer), the notice:
+       "Copyright (C) 2026 Prima Motion Co., Ltd."
+   and the statement:
+       "Originally developed by Prima Motion Co., Ltd."
+
+2. Marking of modified versions (section 7(c))
+   You may not misrepresent the origin of this material. A modified version must be
+   marked in a reasonable way as different from the original version, for example by
+   using a different name and by stating that it is a modified version, and it must not
+   be presented as the original program or as a program made, provided or endorsed by
+   Prima Motion Co., Ltd.
+
+3. Publicity (section 7(d))
+   You may not use the names of Prima Motion Co., Ltd. or its staff to endorse or promote
+   a modified version or a product or service based on it without prior written
+   permission, except for the attribution required by term 1.
+
+4. Trademarks (section 7(e))
+   This License does not grant any right under trademark law to use the names
+   "Prima Motion" and "PRIMA", the Prima Motion logo, or any other trade name, trademark
+   or service mark of Prima Motion Co., Ltd. If you convey a modified version, or make
+   one available to users over a network, you must remove the Prima Motion name and logo
+   from its name, title and user interface (other than the attribution required by
+   term 1). See TRADEMARKS.txt.
+
+-----------------------------------------------------------------------------------------
+Thai summary (for information only; the English text above governs)
+
+เงื่อนไขเพิ่มเติมตามมาตรา 7 ของ GNU AGPL-3.0 สำหรับงานที่บริษัท พริมา โมชั่น จำกัด สร้างขึ้น
+1. ต้องคงข้อความลิขสิทธิ์ "Copyright (C) 2026 Prima Motion Co., Ltd." และ
+   "Originally developed by Prima Motion Co., Ltd." ไว้ในซอร์สโค้ดและในหน้าจอของโปรแกรม
+2. ฉบับที่ดัดแปลงต้องระบุว่าเป็นฉบับดัดแปลง ใช้ชื่ออื่น และห้ามแสดงว่าเป็นต้นฉบับ
+   หรือเป็นของ/ได้รับการรับรองจากบริษัท พริมา โมชั่น จำกัด
+3. ห้ามใช้ชื่อบริษัทหรือบุคลากรเพื่อการโฆษณาหรือรับรองฉบับดัดแปลง โดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร
+4. license นี้ไม่ให้สิทธิ์ใช้ชื่อ "Prima Motion" "PRIMA" และโลโก้ ฉบับที่ดัดแปลงและเผยแพร่
+   หรือเปิดให้ผู้อื่นใช้ผ่านเครือข่าย ต้องนำชื่อและโลโก้ Prima Motion ออกจากชื่อ หัวเรื่อง
+   และหน้าจอของโปรแกรม (ยกเว้นข้อความระบุผู้สร้างตามข้อ 1)

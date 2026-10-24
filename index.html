@@ -1,0 +1,1263 @@
+<!doctype html>
+<!--
+  Prima Motion Capture Volume Planner
+  Copyright (C) 2026 Prima Motion Co., Ltd.
+  Originally developed by Prima Motion Co., Ltd.
+
+  This program is free software: you can redistribute it and/or modify it under the terms of the
+  GNU Affero General Public License as published by the Free Software Foundation, version 3,
+  with the additional terms under section 7 stated in ADDITIONAL-TERMS.txt.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+  even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Affero General Public License for more details: LICENSE.txt or <https://www.gnu.org/licenses/>.
+
+  The names "Prima Motion" and "PRIMA" and the Prima Motion logo are not licensed under the AGPL.
+  See TRADEMARKS.txt.
+-->
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#4d2994">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prima Motion Capture Volume Planner</title>
+<meta name="description" content="Prima Motion Capture Volume Planner — เครื่องมือฟรีแบบ open source จากบริษัท พริมา โมชั่น จำกัด สำหรับช่วยวางแผนตำแหน่งกล้อง optical motion capture (OptiTrack, Qualisys, Vicon) ยินดีให้คำปรึกษาเพิ่มเติมสำหรับโครงการจริงที่ hello@primamotion.tech">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%234d2994%27/%3E%3Cpath d=%27M8 24V8h9a5 5 0 010 10h-5%27 fill=%27none%27 stroke=%27white%27 stroke-width=%273%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Prima Motion Capture Volume Planner", "url": "https://camplan.primamotion.tech/", "description": "Prima Motion Capture Volume Planner — a free, open-source tool from Prima Motion Co., Ltd. for planning optical motion capture camera placement (OptiTrack, Qualisys, Vicon). For advice on a real project, contact hello@primamotion.tech", "inLanguage": ["th", "en"], "applicationCategory": "DesignApplication", "operatingSystem": "Any (web browser)", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "THB"}, "license": "https://www.gnu.org/licenses/agpl-3.0.html", "sameAs": ["https://github.com/RatTongiam/camplan"], "author": {"@type": "Organization", "name": "Prima Motion Co., Ltd.", "alternateName": "บริษัท พริมา โมชั่น จำกัด", "url": "https://www.primamotion.tech", "email": "hello@primamotion.tech"}, "publisher": {"@type": "Organization", "name": "Prima Motion Co., Ltd.", "url": "https://www.primamotion.tech"}}</script>
+<link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+<style>
+:root{
+  --bg:#efebe2; --card:#fff; --ink:#272030; --ink2:#4a4357; --muted:#675f74;
+  --line:#d9d2e6; --line2:#e7e2ef; --field:#a89ec0; --acc:#4d2994; --acc2:#260762; --soft:#d0c3f1; --pink:#ab1d79; --warn-bg:#FFF4DB; --warn:#5C3A00;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',system-ui,sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:1280px;margin:0 auto;padding:32px 24px 48px;display:flex;flex-direction:column;gap:24px}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand img{height:76px;width:76px;flex:none;mix-blend-mode:multiply}
+.brand .wm{display:none;font-weight:700;color:var(--acc);font-size:20px}
+.hdr-line{height:4px;border-radius:2px;background:linear-gradient(90deg,#260762,#4d2994 45%,#ab1d79 80%,#ef94ca)}
+.disc{background:#f6f2fd;border:1px solid var(--soft);border-left:4px solid var(--acc);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ink2)}
+.disc summary{cursor:pointer;font-weight:600;color:var(--ink);min-height:28px;display:flex;align-items:center;gap:8px;list-style:none}
+.disc summary::-webkit-details-marker{display:none}
+.disc summary::after{content:"+";margin-left:auto;font-family:var(--mono);font-size:16px;color:var(--acc)}
+.disc[open] summary::after{content:"−"}
+.disc p{margin:8px 0 0;line-height:1.6}
+.eyebrow{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.08em;color:var(--muted)}
+h1{margin:0;font-size:32px;line-height:1.2;font-weight:600}
+h2{margin:0;font-size:16px;font-weight:600}
+p{margin:0}
+.lead{color:var(--ink2);max-width:780px}
+.main{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.side{flex:1 1 320px;max-width:420px;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:20px}
+.res{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:20px}
+.sec{display:flex;flex-direction:column;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+label,.lab{font-size:13px;color:var(--ink2)}
+input[type=text],select{width:100%;min-height:44px;padding:0 10px;border:1px solid var(--field);border-radius:6px;background:#fff;color:var(--ink);font-size:15px;font-family:inherit}
+input[type=text]{font-family:var(--mono)}
+select:disabled,input:disabled{background:#efebe2;color:var(--muted)}
+.note{font-size:13px;color:var(--muted)}
+.mono-box{font-family:var(--mono);font-size:13px;color:var(--ink2);background:var(--bg);border-radius:6px;padding:8px 10px}
+.warn{font-size:13px;color:#7A4A00;background:var(--warn-bg);border-radius:6px;padding:8px 10px}
+.check{display:flex;align-items:center;gap:10px;min-height:44px;font-size:15px;color:var(--ink)}
+.check input{width:20px;height:20px;margin:0;accent-color:var(--acc)}
+.btn{min-height:44px;padding:0 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid var(--field);background:#fff;color:var(--ink);font-family:inherit}
+.btn.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn:hover:not(:disabled){filter:brightness(.94)}
+.btn:disabled{opacity:.6;cursor:progress}
+.run{min-height:48px;border:0;border-radius:8px;background:var(--acc);color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit}
+.run:hover:not(:disabled){filter:brightness(.94)}
+.run:disabled{opacity:.6;cursor:progress}
+.bar{height:6px;border-radius:3px;background:var(--line2);overflow:hidden}
+.bar>div{height:100%;background:var(--acc);width:0}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.card .v{font-family:var(--mono);font-weight:600;font-size:28px;line-height:1.2}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.stale{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 14px;font-size:14px}
+.stagebox{border:2px solid var(--ink);overflow:hidden;background:#f7f5fa}
+#stage{position:relative;width:100%;aspect-ratio:16/10;container-type:inline-size;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;--az:-35deg;--tilt:58deg}
+#scene{position:absolute;left:50%;top:58%;width:0;height:0;transform-style:preserve-3d;transform:rotateX(var(--tilt)) rotateZ(var(--az))}
+#scene .g{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;pointer-events:none}
+#scene .e{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none;box-sizing:border-box}
+#scene canvas{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none;image-rendering:pixelated;opacity:.85}
+.dot{position:absolute;left:0;top:0;transform-origin:0 0;width:24px;height:24px;border-radius:50%;font-family:var(--mono);font-weight:600;font-size:11px;line-height:20px;text-align:center;color:#fff;cursor:pointer;background:#14181B;border:2px solid #fff;pointer-events:auto;box-sizing:border-box}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.legend span.sw{display:inline-block;width:18px;height:18px;border-radius:3px;border:1px solid var(--field);vertical-align:middle;margin-right:6px}
+.legend div{font-size:13px;color:var(--ink2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{min-width:44px;min-height:44px;border-radius:8px;font-family:var(--mono);font-weight:600;font-size:14px;cursor:pointer;border:1px solid var(--field);background:#fff;color:var(--ink)}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.sl{display:flex;align-items:center;gap:10px}
+.sl label{width:64px}
+.sl input[type=range]{flex:1 1 120px;min-height:44px;accent-color:var(--acc)}
+.sl .t{width:56px;text-align:right;font-family:var(--mono);font-size:13px}
+.slgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:4px 20px}
+.tbl{overflow-x:auto}
+.tbl>div{min-width:520px}
+.tr{display:grid;grid-template-columns:48px repeat(6,minmax(0,1fr));gap:8px;padding:8px 0;border-bottom:1px solid var(--line2);font-family:var(--mono);font-size:14px}
+.tr.h{font-family:inherit;font-size:13px;font-weight:600;color:var(--ink2);border-bottom:2px solid var(--ink)}
+.tr7{grid-template-columns:40px minmax(0,1.7fr) repeat(5,minmax(0,1fr))}
+.tr .okc{color:var(--acc);font-weight:600}.tr .noc{color:#9A3412}
+.tr.off{color:var(--muted)}
+#plan{cursor:crosshair}
+#plan{width:100%;height:auto;display:block;border:2px solid var(--ink);background:#fff}
+footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+footer a{color:var(--acc)}
+hr.sep{border:0;border-top:1px solid var(--line2);margin:0}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div class="brand"><img src="https://assets.zyrosite.com/AwvkPRPaQNI9Dwxw/prima-logo-vector-color-YKbrek2a2qT61kV4.svg" alt="Prima Motion" width="76" height="76" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="wm">PRIMA MOTION</span><div class="eyebrow" data-en="PRIMA MOTION · MOCAP ROOM PLANNER">PRIMA MOTION · เครื่องมือวางแผนห้อง mocap</div></div><div class="fld" style="width:160px"><label for="lang">ภาษา / Language</label><select id="lang"><option value="th">ไทย</option><option value="en">English</option></select></div></div>
+<div class="hdr-line"></div>
+<h1>Prima Motion Capture Volume Planner</h1>
+<p class="lead" data-en="Enter the room size and camera model. The tool searches for camera positions and orientations that maximise the volume seen by at least k cameras, compares the result with a perimeter layout, and lets you drag cameras in 3D to adjust them yourself.">ใส่ขนาดห้องและรุ่นกล้อง ระบบจะค้นหาตำแหน่งและทิศทางกล้องที่ทำให้ปริมาตรที่ถูกเห็นโดยกล้องอย่างน้อย k ตัวมากที่สุด เทียบกับการวางกล้องเรียงรอบห้อง และลากกล้องใน 3D เพื่อปรับเองได้</p>
+<details class="disc" id="disc"><summary><span data-en="Disclaimer: this tool supports preliminary assessment and planning of camera placement only. Click to read more">ข้อจำกัดความรับผิดชอบ: เครื่องมือนี้ใช้ช่วยประเมินและวางแผนการติดตั้งกล้องเบื้องต้นเท่านั้น กดเพื่ออ่านรายละเอียด</span></summary><p data-en="This tool is provided only to support preliminary assessment and planning of camera placement. All results come from a geometric model combined with camera specifications and values set by the user. The model does not account for many on-site factors, such as occlusion by people or objects, reflections, lighting conditions, camera mounting structures and calibration quality, so actual results may differ from those shown.">เครื่องมือนี้จัดทำขึ้นเพื่อช่วยประเมินและวางแผนตำแหน่งการติดตั้งกล้องในเบื้องต้นเท่านั้น ผลลัพธ์ทั้งหมดได้จากการคำนวณด้วยแบบจำลองทางเรขาคณิต ร่วมกับข้อมูลจำเพาะของกล้องและค่าที่ผู้ใช้กำหนดเอง แบบจำลองยังไม่ครอบคลุมปัจจัยหน้างานหลายประการ เช่น การบดบังจากคนหรือวัตถุ แสงสะท้อน สภาพแสง โครงสร้างสำหรับยึดกล้อง และคุณภาพของการ calibrate ผลที่ได้จริงจึงอาจแตกต่างจากที่แสดง</p><p data-en="The camera specifications in this tool were collected from publicly available sources, such as manufacturers' product data sheets. They may be incomplete, inaccurate or changed later, and some values are this tool's own interpretation or estimate. Prima Motion Co., Ltd. does not guarantee the accuracy of this information; please confirm with the manufacturer before relying on it.">ข้อมูลจำเพาะของกล้องในเครื่องมือนี้รวบรวมจากเอกสารที่เผยแพร่ต่อสาธารณะและสืบค้นได้ เช่น แผ่นข้อมูลผลิตภัณฑ์ของผู้ผลิตแต่ละราย ข้อมูลเหล่านี้อาจไม่ครบถ้วน คลาดเคลื่อน หรือมีการเปลี่ยนแปลงภายหลัง และบางค่าเป็นการตีความหรือประมาณการของเครื่องมือนี้ บริษัทฯ ไม่รับรองความถูกต้องของข้อมูลดังกล่าว โปรดตรวจสอบกับผู้ผลิตก่อนนำไปใช้</p><p data-en="The results do not guarantee system performance and do not replace a site survey, on-site testing, or advice from the manufacturer or a qualified specialist. Prima Motion Co., Ltd. accepts no liability for any loss, damage or cost arising from the use of these results, including design, installation, purchasing or any other decision.">ผลลัพธ์จากเครื่องมือนี้ไม่ใช่การรับรองประสิทธิภาพของระบบ และไม่ใช้แทนการสำรวจหน้างาน การทดสอบจริง หรือคำแนะนำจากผู้ผลิตและผู้เชี่ยวชาญ บริษัท พริมา โมชั่น จำกัด ไม่รับผิดชอบต่อความเสียหายหรือค่าใช้จ่ายใด ๆ ที่เกิดจากการนำผลลัพธ์ไปใช้ รวมถึงการออกแบบ การติดตั้ง การจัดซื้อ หรือการตัดสินใจอื่นใด</p><p data-en="For advice on a specific project, we would be glad to help at hello@primamotion.tech">หากต้องการคำแนะนำสำหรับโครงการจริง ยินดีให้คำปรึกษาเพิ่มเติมได้ที่ hello@primamotion.tech</p></details>
+</header>
+
+<div class="main">
+
+<!-- INPUTS -->
+<aside class="side">
+
+<section class="sec">
+<h2 data-en="Room">ห้อง</h2>
+<div class="grid3">
+<div class="fld"><label for="inW">W (m)</label><input id="inW" type="text" inputmode="decimal" data-k="inW"></div>
+<div class="fld"><label for="inL">L (m)</label><input id="inL" type="text" inputmode="decimal" data-k="inL"></div>
+<div class="fld"><label for="inH">H (m)</label><input id="inH" type="text" inputmode="decimal" data-k="inH"></div>
+</div>
+<div class="note" data-en="Units in metres: W width (x axis) · L length (y axis) · H ceiling height">หน่วยเมตร: W กว้าง (แกน x) · L ยาว (แกน y) · H ความสูงเพดาน</div>
+</section>
+
+<section class="sec">
+<h2 data-en="Capture area">พื้นที่ที่ต้องการ capture</h2>
+<div class="grid2">
+<div class="fld"><label for="inCapH" data-en="Working height (m)">ความสูงที่ใช้งาน (m)</label><input id="inCapH" type="text" inputmode="decimal" data-k="inCapH"></div>
+<div class="fld"><label for="inMargin" data-en="Wall margin (m)">ระยะห่างผนัง (m)</label><input id="inMargin" type="text" inputmode="decimal" data-k="inMargin"></div>
+</div>
+</section>
+
+<section class="sec">
+<h2 data-en="Cameras">กล้อง</h2>
+<div class="grid2">
+<div class="fld"><label for="brand">Brand</label><select id="brand"></select></div>
+<div class="fld"><label for="model" data-en="Model">รุ่น</label><select id="model"></select></div>
+</div>
+<div class="fld" id="lensWrap" hidden><label for="lens" data-en="Lens">เลนส์</label><select id="lens"></select></div>
+<div class="mono-box" id="specLine"></div>
+<div class="warn" id="modelNote" hidden></div>
+<div class="grid2" id="customWrap" hidden>
+<div class="fld"><label for="cHF" data-en="Horizontal FOV (°)">FOV แนวนอน (°)</label><input id="cHF" type="text" inputmode="decimal" data-k="cHF"></div>
+<div class="fld"><label for="cVF" data-en="Vertical FOV (°)">FOV แนวตั้ง (°)</label><input id="cVF" type="text" inputmode="decimal" data-k="cVF"></div>
+<div class="fld"><label for="cHR" data-en="Resolution H (px)">ความละเอียด H (px)</label><input id="cHR" type="text" inputmode="decimal" data-k="cHR"></div>
+<div class="fld"><label for="cVR" data-en="Resolution V (px)">ความละเอียด V (px)</label><input id="cVR" type="text" inputmode="decimal" data-k="cVR"></div>
+</div>
+<div class="grid3">
+<div class="fld"><label for="inN" data-en="Number of cameras">จำนวนกล้อง</label><input id="inN" type="text" inputmode="decimal" data-k="inN"></div>
+<div class="fld"><label for="inK" data-en="Minimum k">k ขั้นต่ำ</label><input id="inK" type="text" inputmode="decimal" data-k="inK"></div>
+<div class="fld"><label for="inRange" data-en="Max range (m)">ระยะสูงสุด (m)</label><input id="inRange" type="text" inputmode="decimal" data-k="inRange"></div>
+</div>
+<div class="fld"><label for="marker" data-en="Marker type (sets the manufacturer max range)">ชนิด marker (ใช้กำหนดระยะสูงสุดตามผู้ผลิต)</label><select id="marker"><option value="passive">Passive</option><option value="active">Active</option></select></div>
+<div class="note" data-en="k = minimum number of cameras that must see a marker at the same time for it to count as inside the capture volume · Max range follows the manufacturer spec sheet and can be edited to match your actual marker size">k = จำนวนกล้องขั้นต่ำที่ต้องเห็น marker พร้อมกัน เพื่อนับว่าอยู่ใน capture volume · ระยะสูงสุดตามแผ่นสเปกผู้ผลิต ปรับเองได้ตามขนาด marker จริง</div>
+</section>
+
+<section class="sec">
+<h2 data-en="Marker and pixel threshold">Marker และเกณฑ์ pixel</h2>
+<div class="grid2">
+<div class="fld"><label for="inMk" data-en="Marker size (mm)">ขนาด marker (mm)</label><input id="inMk" type="text" inputmode="decimal" data-k="inMk" data-live="1"></div>
+<div class="fld"><label for="inMinPx" data-en="Minimum threshold (area, px²)">เกณฑ์ขั้นต่ำ (พื้นที่ px²)</label><input id="inMinPx" type="text" inputmode="decimal" data-k="inMinPx" data-live="1"></div>
+</div>
+<label class="check"><input type="checkbox" id="usePix"><span data-en="Limit visible range by the marker's pixel size">จำกัดระยะมองเห็นตามขนาด pixel ของ marker</span></label>
+<div class="mono-box" id="pixLine"></div>
+<div class="warn" id="pixWarn" hidden></div>
+<div class="fld"><label for="pixMode" data-en="Pixel range model">โมเดลระยะ pixel</label><select id="pixMode"><option value="cal" data-en="Calibrated to manufacturer spec">สอบเทียบกับสเปกผู้ผลิต</option><option value="geo" data-en="Pure geometry (no bloom)">เรขาคณิตล้วน (ไม่รวม bloom)</option></select></div>
+<div class="note" id="pixNote"></div>
+</section>
+
+<section class="sec">
+<h2 data-en="Perimeter layout">วางเรียงรอบห้อง</h2>
+<div class="note" data-en="Cameras are spaced evenly along the room perimeter in each tier, aimed at the centre, and also used as the optimizer's starting point">แบ่งกล้องเท่ากันตามความยาวรอบห้องในแต่ละชั้น หันเข้าหาศูนย์กลาง และใช้เป็นจุดเริ่มต้นของ optimizer ด้วย</div>
+<div class="fld"><label for="inTiers" data-en="Number of tiers">จำนวนชั้น</label>
+<select id="inTiers"><option value="1" data-en="1 tier">1 ชั้น</option><option value="2" data-en="2 tiers (upper/lower)">2 ชั้น (บน/ล่าง)</option><option value="3" data-en="3 tiers">3 ชั้น</option></select></div>
+<div class="grid2">
+<div class="fld"><label for="inZHigh" data-en="Upper tier height (m)">ความสูงชั้นบน (m)</label><input id="inZHigh" type="text" inputmode="decimal" data-k="inZHigh"></div>
+<div class="fld" id="zLowWrap"><label for="inZLow" data-en="Lower tier height (m)">ความสูงชั้นล่าง (m)</label><input id="inZLow" type="text" inputmode="decimal" data-k="inZLow"></div>
+</div>
+<div class="mono-box" id="tierNote"></div>
+<label class="check" id="staggerWrap"><input type="checkbox" id="stagger"><span data-en="Stagger positions between tiers (avoid stacking directly)">สลับตำแหน่งระหว่างชั้น (ไม่ให้ซ้อนกันตรงๆ)</span></label>
+</section>
+
+<section class="sec">
+<label class="check"><input type="checkbox" id="wallOnly"><span data-en="Wall mounting only (for the optimizer)">ติดตั้งบนผนังเท่านั้น (ใช้กับ optimizer)</span></label>
+</section>
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<button class="run" id="run">คำนวณตำแหน่งกล้อง</button>
+<div class="bar"><div id="prog"></div></div>
+</div>
+</aside>
+
+<!-- RESULTS -->
+<section class="res">
+<div class="stale" id="stale" hidden data-en="Inputs have changed. The results below still reflect the old values. Press &quot;Optimise camera positions&quot; again.">ค่าที่กรอกเปลี่ยนไปแล้ว ผลด้านล่างยังเป็นของค่าเดิม กด "คำนวณตำแหน่งกล้อง" อีกครั้ง</div>
+<div class="cards" id="cards"></div>
+
+<div class="panel">
+<div class="row" style="justify-content:space-between">
+<h2 data-en="3D view">มุมมอง 3D</h2>
+<div class="row" id="viewBtns"></div>
+</div>
+<div style="font-size:14px;color:var(--ink2)" data-en="Drag empty space to rotate the view · Drag a numbered camera dot to move it, results update immediately · Hold Shift while dragging, or choose height mode, to move a camera up or down · The orange M dot is the test marker and can be dragged too">ลากพื้นที่ว่างเพื่อหมุนมุมมอง · ลากจุดกล้องที่มีหมายเลขเพื่อย้าย ระบบคำนวณใหม่ทันที · กด Shift ค้างระหว่างลาก หรือเลือกโหมดความสูง เพื่อเลื่อนกล้องขึ้นลง · จุด M สีส้มคือ marker ทดสอบ ลากได้เช่นกัน</div>
+<div class="row" id="modeBtns"></div>
+<div class="note" id="covInfo" hidden></div>
+<div class="row" style="gap:12px">
+<label for="slice" style="font-size:14px" data-en="Coverage slice height">ระดับความสูงของแผ่น coverage</label>
+<input id="slice" type="range" min="0" max="2" step="0.05" value="1" style="flex:1 1 200px;min-height:44px;accent-color:var(--acc)">
+<span id="sliceLab" style="font-family:var(--mono);font-weight:600;min-width:84px"></span>
+</div>
+
+<div class="stagebox">
+<div id="stage">
+<div id="scene">
+<div class="e" id="floor"></div>
+<div class="g" id="faces"></div>
+<canvas id="slicecv"></canvas>
+<div class="g" id="pts"></div>
+<div class="g" id="lines"></div>
+<div class="g" id="dots"></div>
+</div>
+</div>
+</div>
+<div class="legend" id="legend"></div>
+
+<hr class="sep">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:14px;font-weight:600" data-en="Select camera">เลือกกล้อง</div>
+<div class="chips" id="chips"></div>
+<div id="selPanel" style="display:flex;flex-direction:column;gap:6px"></div>
+</div>
+</div>
+
+<div class="panel" id="mkPanel">
+<h2 data-en="Marker test: camera rays · image size · residual">ทดสอบ marker: รังสีจากกล้อง · ขนาดภาพ · residual</h2>
+<div style="font-size:14px;color:var(--ink2)" data-en="The marker starts at the room centre on the floor. Drag the orange M dot in 3D, click on the plan below, or use the sliders to move it and see which cameras can see it">marker อยู่กลางห้องบนพื้นเป็นค่าเริ่มต้น ลากจุด M สีส้มใน 3D, คลิกบนแผนผังด้านล่าง หรือใช้ slider เพื่อย้ายและดูว่ากล้องตัวไหนเห็น</div>
+<div class="slgrid">
+<div class="sl"><label for="mk-x">x (m)</label><input id="mk-x" type="range" data-mksl="x" min="0" max="8" step="0.05" value="0"><span class="t" id="mkt-x"></span></div>
+<div class="sl"><label for="mk-y">y (m)</label><input id="mk-y" type="range" data-mksl="y" min="0" max="6" step="0.05" value="0"><span class="t" id="mkt-y"></span></div>
+<div class="sl"><label for="mk-z">z (m)</label><input id="mk-z" type="range" data-mksl="z" min="0" max="3" step="0.05" value="0"><span class="t" id="mkt-z"></span></div>
+</div>
+<div class="row" style="align-items:flex-end">
+<button class="btn" data-act="mkreset" data-en="Back to room centre on floor">กลับไปกลางห้องบนพื้น</button>
+<button class="btn on" id="mkRays" data-act="rays">เส้นรังสี: เปิด</button>
+<div class="fld" style="width:200px"><label for="inSig" data-en="Centroid σ (px)">σ ของ centroid (px)</label><input id="inSig" type="text" inputmode="decimal" data-k="inSig" data-live="1"></div>
+</div>
+<div class="warn" id="mkStale" hidden data-en="Marker size, pixel threshold and σ in this table use the latest values immediately, but the coverage slice and camera positions still reflect the old values (including camera model, room and k). Press &quot;Optimise camera positions&quot; to bring them back in sync.">ขนาด marker, เกณฑ์ pixel และ σ ในตารางนี้ใช้ค่าล่าสุดทันที แต่แผ่น coverage และตำแหน่งกล้องยังเป็นของค่าเดิม (รวมถึงรุ่นกล้อง ห้อง และ k) กด "คำนวณตำแหน่งกล้อง" เพื่อให้ตรงกัน</div>
+<div class="cards" id="mkCards"></div>
+<div class="tbl"><div id="mkTable" style="min-width:700px"></div></div>
+<div class="note" id="mkNote"></div>
+</div>
+
+<div class="panel" id="ancPanel">
+<h2 data-en="Anchor markers for Motive Continuous Calibration">Anchor marker สำหรับ Continuous Calibration ใน Motive</h2>
+<div style="font-size:14px;color:var(--ink2)" data-en="Suggests fixed positions outside the capture volume (on the walls, up to the ceiling) that are seen by many cameras, spread apart, and measured accurately. Computed for the camera positions currently shown.">แนะนำตำแหน่งติดตั้ง anchor ที่อยู่นอก capture volume (บนผนัง ตั้งแต่พื้นถึงเพดาน) โดยให้กล้องหลายตัวเห็น กระจายห่างกัน และวัดตำแหน่งได้แม่น คำนวณจากตำแหน่งกล้องที่แสดงอยู่ขณะนี้</div>
+<div class="grid3">
+<div class="fld"><label for="inAncN" data-en="Number of anchors">จำนวน anchor</label><input id="inAncN" type="text" inputmode="numeric" data-k="inAncN" data-live="1"></div>
+<div class="fld"><label for="inAncMin" data-en="Min. cameras per anchor">กล้องขั้นต่ำต่อ anchor</label><input id="inAncMin" type="text" inputmode="numeric" data-k="inAncMin" data-live="1"></div>
+<div class="fld"><label for="inAncClr" data-en="Clearance from capture volume (m)">ระยะห่างจาก capture volume (m)</label><input id="inAncClr" type="text" inputmode="decimal" data-k="inAncClr" data-live="1"></div>
+</div>
+<label class="check"><input type="checkbox" id="ancOn"><span data-en="Show anchors in the 3D view and plan">แสดง anchor ในมุมมอง 3D และแผนผัง</span></label>
+<div class="row" id="ancSelRow"></div>
+<div class="cards" id="ancCards"></div>
+<div class="tbl"><div id="ancTable" style="min-width:700px"></div></div>
+<div class="mono-box" id="ancDetail" style="font-size:13px"></div>
+<div class="note" id="ancNote"></div>
+</div>
+
+<div class="panel">
+<h2 data-en="Top-down plan (at the same z as the coverage slice)">แผนผังมุมมองจากด้านบน (ที่ระดับ z เดียวกับแผ่น coverage)</h2>
+<div style="display:flex;justify-content:center"><canvas id="plan" width="900" height="675"></canvas></div>
+<div class="note" data-en="The white cone shows approximate camera direction and horizontal angle, not to scale · Click on the plan to place the marker (orange M dot) · Orange lines are rays from cameras that see the marker, dashed grey lines are cameras that do not">กรวยสีขาวแสดงทิศและมุมกว้างในแนวราบโดยประมาณ ไม่ได้สเกลตามระยะจริง · คลิกบนแผนผังเพื่อวาง marker (จุดสีส้ม M) เส้นส้มคือรังสีจากกล้องที่เห็น marker เส้นประเทาคือกล้องที่ไม่เห็น</div>
+</div>
+
+<div class="panel">
+<h2 data-en="Camera positions and orientations">ตำแหน่งและทิศทางกล้อง</h2>
+<div class="tbl"><div id="camTable"></div></div>
+<div class="note" data-en="origin = room corner at x=0, y=0, z=0 (floor) · yaw 0° = facing +x, increasing toward +y · positive pitch = tilted down · roll 90° = camera rotated to portrait">origin = มุมห้องที่ x=0, y=0, z=0 (พื้น) · yaw 0° = หันไปทาง +x และเพิ่มค่าไปทาง +y · pitch บวก = ก้มลง · roll 90° = หมุนกล้องตั้งเป็นแนว portrait</div>
+</div>
+
+<footer>
+<div data-en="Method: the volume is divided into voxels and each voxel is counted by how many cameras see it (inside the horizontal/vertical FOV and within camera range). Camera positions and orientations are then searched with simulated annealing, starting from the perimeter layout. Results are purely geometric: they ignore occlusion by people or equipment and ignore reflections. Verify with the vendor's software or real measurements before installing.">วิธีคำนวณ: แบ่งพื้นที่เป็น voxel แล้วนับว่าแต่ละ voxel อยู่ในกรวยมองเห็น (FOV แนวนอน/แนวตั้ง) และไม่เกินระยะสูงสุดของกล้องกี่ตัว จากนั้นค้นหาตำแหน่ง/ทิศทางด้วย simulated annealing เริ่มจากการวางเรียงรอบห้อง ผลเป็นเชิงเรขาคณิตล้วน ไม่คิดการบังจากคน/อุปกรณ์ และไม่คิดการสะท้อน ควรยืนยันด้วย Motive หรือการวัดจริงก่อนติดตั้ง</div>
+<div data-en="Marker assessment: image size comes from a pinhole model and a user-set minimum pixel threshold (default 4 px, matching Motive's Minimum Pixel Threshold). In calibrated mode the reference range comes from each manufacturer's test conditions (OptiTrack: 14 mm marker, exposure 800, gain 6, lowest f-stop; Qualisys: 16 mm marker; Vicon: not given). Error and residual are theoretical predictions from an assumed centroid σ, not measured values or manufacturer guarantees.">การประเมิน marker: ขนาดภาพคิดจากแบบจำลอง pinhole และเกณฑ์ pixel ขั้นต่ำที่ผู้ใช้กำหนด (ค่าเริ่มต้น 4 px ตาม Minimum Pixel Threshold ของ Motive) ในโหมดสอบเทียบ ระยะอ้างอิงจากเงื่อนไขทดสอบของผู้ผลิตแต่ละราย (OptiTrack: marker 14 mm, exposure 800, gain 6, f-stop ต่ำสุด · Qualisys: marker 16 mm · Vicon: ไม่ระบุ) ส่วน error/residual เป็นค่าคาดการณ์เชิงทฤษฎีจาก σ ของ centroid ที่สมมติ ไม่ใช่ค่าวัดจริงหรือค่ารับประกันของผู้ผลิต</div>
+<div data-en="Camera data: OptiTrack PrimeX Family Spec Sheet (v13, 06.25) and Flex 3 / Flex 13 Spec Sheet (2026.09.11); Qualisys Miqus (2020-01-10), Miqus Hybrid (2025-01-17) and Arqus (2021-11-03) product information sheets; Vicon Vero brochure V4.2 and Valkyrie Specification Sheet (July 2025). FOV and range are for normal-mode full resolution and the model's maximum frame rate there; at higher fps OptiTrack sensors are cropped and the FOV narrows.">ข้อมูลกล้อง: OptiTrack PrimeX Family Spec Sheet (v13, 06.25) และ Flex 3 / Flex 13 Spec Sheet (2026.09.11); Qualisys Miqus (2020-01-10), Miqus Hybrid (2025-01-17) และ Arqus (2021-11-03) product information sheets; Vicon Vero brochure V4.2 และ Valkyrie Specification Sheet (July 2025) ค่า FOV และระยะเป็นค่าที่ normal mode เต็ม resolution และ frame rate สูงสุดของรุ่นในโหมดนั้น ถ้าใช้ fps สูงกว่านั้น sensor ของ OptiTrack จะถูก crop และ FOV แคบลง</div>
+<div>Copyright (C) 2026 Prima Motion Co., Ltd. · Originally developed by Prima Motion Co., Ltd. · <span data-en="Open source under the GNU AGPL-3.0 with additional terms. The source code is this page itself (view page source).">ซอร์สโค้ดเปิดภายใต้ GNU AGPL-3.0 พร้อมเงื่อนไขเพิ่มเติม ซอร์สโค้ดคือตัวหน้านี้เอง (ดูได้จาก view page source)</span> · <a href="LICENSE.txt">LICENSE</a> · <a href="ADDITIONAL-TERMS.txt" data-en="Additional terms">เงื่อนไขเพิ่มเติม</a> · <a href="TRADEMARKS.txt" data-en="Trademarks">เครื่องหมายการค้า</a> · <a href="https://github.com/RatTongiam/camplan" rel="noopener">GitHub</a></div><div data-en="The name and logo of Prima Motion are not included in the license. Modified versions must use a different name and logo. OptiTrack, Qualisys, Vicon and their product names are trademarks of their respective owners.">ชื่อและโลโก้ Prima Motion ไม่รวมอยู่ใน license ฉบับที่ดัดแปลงต้องใช้ชื่อและโลโก้อื่น · OptiTrack, Qualisys, Vicon และชื่อรุ่นสินค้าเป็นเครื่องหมายการค้าของเจ้าของแต่ละราย</div>
+</footer>
+</section>
+</div>
+</div>
+
+<script>
+'use strict';
+/* ======================= camera database ======================= */
+// rp = max detection distance, passive markers (m); ra = active markers (m); null = not specified by the sheet
+const L1 = (label, h, v) => [{ label, hfov: h, vfov: v }];
+const VN = { th: 'แผ่นข้อมูล Vero ไม่ระบุระยะสูงสุด ขนาด marker และระยะ active marker · เลนส์ varifocal 6.5–15.5 mm ให้เลือกเฉพาะ FOV สองปลายตามแผ่นข้อมูล ใช้แบรนด์ Custom ถ้าต้องการ FOV ระหว่างนั้น', en: 'The Vero data sheet gives no maximum range, marker size or active-marker range · The 6.5–15.5 mm varifocal lens is offered only at the two FOV extremes on the data sheet; use the Custom brand for anything in between' };
+const VN13 = { th: 'แผ่นข้อมูลระบุ FOV กว้างสุดของ v1.3 เป็น "55.2 x 439" ซึ่งน่าจะพิมพ์ผิดจาก 43.9 จึงใช้ 43.9 (ควรยืนยันกับ Vicon) · ' + VN.th, en: 'The data sheet lists the v1.3 wide FOV as "55.2 x 439", which is probably a typo for 43.9, so 43.9 is used (please confirm with Vicon) · ' + VN.en };
+const VKN = { th: 'แผ่นสเปก Valkyrie ระบุเฉพาะ angle of view 54°–72° ต่อเซนเซอร์ แอปตีความเป็นแนวนอน (ปลายแคบ 54° ตรงกับความยาวโฟกัสกับความกว้างเซนเซอร์ของ VK26 / VK8 / VK6) และคำนวณแนวตั้งจากอัตราส่วนเซนเซอร์ ซึ่งไม่ใช่ค่าจากผู้ผลิต · ไม่ระบุระยะสูงสุดหรือขนาด marker · เลนส์ใช้นอกช่วงนี้ได้ (กว้างกว่า 72° ไม่มีแสง strobe ครอบคลุม) ใช้แบรนด์ Custom ถ้าต้องการ FOV อื่น', en: 'The Valkyrie spec sheet gives only a 54°–72° angle of view per sensor. The app reads this as horizontal (the 54° end matches the focal length and sensor width of VK26 / VK8 / VK6) and derives the vertical FOV from the sensor aspect ratio; these are not manufacturer values · No maximum range or marker size given · The lens works outside this range (wider than 72° has no strobe coverage); use the Custom brand for other FOVs' };
+const VL = (wh, wv, th_, tv) => [{ label: { th: 'กว้างสุด', en: 'Wide' }, hfov: wh, vfov: wv }, { label: { th: 'แคบสุด (tele)', en: 'Tele' }, hfov: th_, vfov: tv }];
+const VKL = (sh, sv) => [72, 54].map((h, i) => ({ label: i ? { th: 'มุมแคบ 54°', en: 'Narrow 54°' } : { th: 'มุมกว้าง 72°', en: 'Wide 72°' }, hfov: h,
+  vfov: +(2 * Math.atan(Math.tan(h * Math.PI / 360) * sv / sh) * 180 / Math.PI).toFixed(1) }));
+const QN = { th: 'ระยะตามแผ่นข้อมูลวัดด้วย marker passive 16 mm · ไม่ระบุระยะ active marker', en: 'Range per the data sheet, measured with a 16 mm passive marker · no active-marker range given' };
+const QL = (sh, sv, nh, nv, wh, wv) => [{ label: { th: 'มาตรฐาน', en: 'Standard' }, hfov: sh, vfov: sv }]
+  .concat(wh ? [{ label: { th: 'มุมกว้าง', en: 'Wide' }, hfov: wh, vfov: wv }] : [])
+  .concat([{ label: { th: 'มุมแคบ', en: 'Narrow' }, hfov: nh, vfov: nv }]);
+const BRANDS = [{
+  key: 'optitrack', name: 'OptiTrack', refD: 14,
+  refNote: { th: 'ระยะตามสเปก OptiTrack ประมาณการด้วย marker 14 mm, exposure 800, gain 6 และ f-stop ต่ำสุด', en: 'OptiTrack spec ranges are estimated with a 14 mm marker, exposure 800, gain 6 and the lowest f-stop' },
+  source: 'OptiTrack PrimeX Family Spec Sheet v13 (06.25) · Flex 3 / Flex 13 Spec Sheet (2026.09.11)',
+  models: [
+    { key: 'x13', name: 'PrimeX 13', hres: 1280, vres: 1024, hz: 240, rp: 16, ra: 25, lenses: L1('5.5 mm f/1.8', 56, 46) },
+    { key: 'x13w', name: 'PrimeX 13W', hres: 1280, vres: 1024, hz: 240, rp: 9, ra: 15, lenses: L1('3.5 mm f/2.4', 82, 70) },
+    { key: 'x22', name: 'PrimeX 22', hres: 2048, vres: 1088, hz: 360, rp: 21, ra: 30, lenses: L1('6.8 mm f/1.6', 79, 49) },
+    { key: 'x41', name: 'PrimeX 41', hres: 2048, vres: 2048, hz: 180, rp: 30, ra: 45, lenses: L1('12 mm f/1.8', 51, 51) },
+    { key: 'x41w', name: 'PrimeX 41W', hres: 2048, vres: 2048, hz: 180, rp: 21, ra: 30, lenses: L1('8.9 mm f/1.8', 65, 65) },
+    { key: 'x120', name: 'PrimeX 120', hres: 4096, vres: 3072, hz: 300, rp: 40, ra: 90, lenses: L1('24 mm f/2.5', 51, 39) },
+    { key: 'x120w', name: 'PrimeX 120W', hres: 4096, vres: 3072, hz: 300, rp: 40, ra: null, lenses: L1('18 mm f/2.5', 65, 51), note: { th: 'แผ่นสเปกระบุระยะ 40 m ค่าเดียว ไม่ระบุว่าเป็น active หรือ passive จึงใช้ 40 m กับทั้งสองแบบ ควรยืนยันกับผู้ผลิต', en: 'The spec sheet gives a single 40 m range without saying whether it is for active or passive markers, so 40 m is used for both. Please confirm with the manufacturer.' } },
+    { key: 'x260', name: 'PrimeX 260', hres: 5120, vres: 5120, hz: 150, rp: 40, ra: 91, lenses: L1('12 mm f/1.8', 57, 57), note: { th: 'ระยะ active 91 m / passive 40 m ตามที่แจ้งจากผู้ใช้ (แผ่นสเปก v13 ยังระบุเป็น TBD)', en: 'Active 91 m / passive 40 m as supplied by the user (spec sheet v13 still lists TBD).' } },
+    { key: 'x260w', name: 'PrimeX 260W', hres: 5120, vres: 5120, hz: 150, rp: null, ra: null, lenses: L1('8.9 mm f/1.8', 74, 74), note: { th: 'ผู้ผลิตยังระบุระยะเป็น TBD ในแผ่นสเปก', en: 'The manufacturer still lists the range as TBD on the spec sheet.' } },
+    { key: 'f3', name: 'Flex 3', hres: 640, vres: 480, hz: 100, rp: 6, ra: null, passiveOnly: true,
+      lenses: [{ label: { th: '4.5 mm f/1.6 (มาตรฐาน)', en: '4.5 mm f/1.6 (standard)' }, hfov: 46, vfov: 35 }, { label: { th: '3.5 mm (เลนส์เสริม)', en: '3.5 mm (optional lens)' }, hfov: 58, vfov: 45 }] },
+    { key: 'f13', name: 'Flex 13', hres: 1280, vres: 1024, hz: 120, rp: 9, ra: null, passiveOnly: true,
+      lenses: [{ label: { th: '5.5 mm f/1.8 (มาตรฐาน)', en: '5.5 mm f/1.8 (standard)' }, hfov: 56, vfov: 46 }, { label: { th: '8 mm (เลนส์เสริม)', en: '8 mm (optional lens)' }, hfov: 42, vfov: 34 }] },
+  ]
+}, {
+  key: 'qualisys', name: 'Qualisys', refD: 16,
+  source: 'Qualisys Miqus (2020-01-10) · Miqus Hybrid (2025-01-17) · Arqus (2021-11-03) product information sheets',
+  refNote: { th: 'ระยะตามแผ่นข้อมูล Qualisys วัดด้วย marker 16 mm (Arqus A12 ที่ exposure สูงสุดกับ marker 19 mm ตรวจจับ passive ได้ไกลถึง 50 m)', en: 'Qualisys data-sheet ranges are measured with a 16 mm marker (Arqus A12 at maximum exposure with a 19 mm marker detects passive markers up to 50 m)' },
+  models: [
+    { key: 'm1', name: 'Miqus M1', hres: 1216, vres: 800, hz: 250, rp: 10, ra: null, lenses: QL(58, 40, 41, 27), note: QN },
+    { key: 'm3', name: 'Miqus M3', hres: 1824, vres: 1088, hz: 340, rp: 15, ra: null, lenses: QL(64, 41, 44, 27, 80, 53), note: QN },
+    { key: 'm5', name: 'Miqus M5', hres: 2048, vres: 2048, hz: 180, rp: 18, ra: null, lenses: QL(49, 49, 25, 25), note: QN },
+    { key: 'mh', name: 'Miqus Hybrid', hres: 1920, vres: 1088, hz: 340, rp: null, ra: null, lenses: QL(61, 37, 46, 27, 83, 53),
+      note: { th: 'แผ่นข้อมูล Miqus Hybrid ไม่ระบุระยะสูงสุดและระยะ active marker · ข้อมูลเป็นของ marker-mode', en: 'The Miqus Hybrid data sheet gives no maximum range and no active-marker range · Data is for marker mode' } },
+    { key: 'a5', name: 'Arqus A5', hres: 2560, vres: 1920, hz: 700, rp: 26, ra: null, lenses: QL(56, 44, 29, 22, 77, 62), note: QN },
+    { key: 'a9', name: 'Arqus A9', hres: 4224, vres: 2160, hz: 300, rp: 28, ra: null, lenses: QL(67, 37, 47, 25, 82, 48), note: QN },
+    { key: 'a12', name: 'Arqus A12', hres: 4096, vres: 3072, hz: 300, rp: 40, ra: null, lenses: QL(54, 42, 36, 27),
+      note: { th: 'ระยะตามแผ่นข้อมูลวัดด้วย marker passive 16 mm (ไม่ระบุระยะ active) · แผ่นข้อมูลระบุว่าที่ exposure สูงสุดกับ marker 19 mm ตรวจจับ passive ได้ไกลถึง 50 m', en: 'Range per the data sheet, measured with a 16 mm passive marker (no active range given) · The sheet states that at maximum exposure with a 19 mm marker passive markers can be detected up to 50 m' } },
+    { key: 'a26', name: 'Arqus A26', hres: 5120, vres: 5120, hz: 150, rp: 32, ra: null, lenses: QL(56, 56, 29, 29), note: QN },
+  ]
+}, {
+  key: 'vicon', name: 'Vicon', refD: 14,
+  source: 'Vicon Vero brochure V4.2 · Valkyrie Specification Sheet (July 2025)',
+  refNote: { th: 'แผ่นข้อมูล Vicon Vero และ Valkyrie ไม่ระบุระยะสูงสุดหรือขนาด marker ที่ใช้วัดระยะ', en: 'The Vicon Vero and Valkyrie data sheets give neither a maximum range nor the marker size used to measure it' },
+  models: [
+    { key: 'v13', name: 'Vero v1.3', hres: 1280, vres: 1024, hz: 250, rp: null, ra: null, lenses: VL(55.2, 43.9, 27.2, 21.8), note: VN13 },
+    { key: 'v22', name: 'Vero v2.2', hres: 2048, vres: 1088, hz: 330, rp: null, ra: null, lenses: VL(98.1, 50.1, 44.1, 23.6), note: VN },
+    { key: 'v13x', name: 'Vero v1.3X', hres: 1280, vres: 1024, hz: 250, rp: null, ra: null, lenses: L1({ th: '4 mm คงที่', en: '4 mm fixed' }, 79, 67.6), note: VN },
+    { key: 'v42', name: 'Vero v4.2', hres: 2048, vres: 2048, hz: 180, rp: null, ra: null, lenses: VL(98.7, 98.7, 43, 43), note: VN },
+    { key: 'vk26', name: 'Valkyrie VK26', hres: 5120, vres: 5120, hz: 150, rp: null, ra: null, lenses: VKL(12.8, 12.8), note: VKN },
+    { key: 'vk16', name: 'Valkyrie VK16', hres: 5120, vres: 3152, hz: 240, rp: null, ra: null, lenses: VKL(12.8, 7.88), note: VKN },
+    { key: 'vk8', name: 'Valkyrie VK8', hres: 3712, vres: 2176, hz: 500, rp: null, ra: null, lenses: VKL(16.7, 9.79), note: VKN },
+    { key: 'vk6', name: 'Valkyrie VK6', hres: 2816, vres: 2176, hz: 720, rp: null, ra: null, lenses: VKL(12.67, 9.79), note: VKN },
+  ]
+}, {
+  key: 'custom', name: 'Custom', refD: 14,
+  refNote: { th: 'ระยะที่กรอกถือเป็นระยะของ marker ขนาด 14 mm', en: 'The range you enter is treated as the range for a 14 mm marker' },
+  models: [
+    { key: 'custom', name: { th: 'ระบุ FOV เอง', en: 'Enter FOV manually' }, hres: 1280, vres: 1024, hz: 0, rp: 15, ra: null, custom: true, lenses: L1({ th: 'กำหนดเอง', en: 'Custom' }, 56, 46) }
+  ]
+}];
+
+/* ======================= state ======================= */
+const S = {
+  brand: 'optitrack', model: 'x13', lens: 0, marker: 'passive',
+  inW: '8', inL: '6', inH: '3.5', inCapH: '2.2', inMargin: '0.3',
+  inN: '12', inK: '3', inRange: '', cHF: '56', cVF: '46', cHR: '1280', cVR: '1024',
+  inTiers: '1', inZHigh: '', inZLow: '1.2', stagger: true, wallOnly: false,
+  view: 'base', sliceZ: '1.0', az: -35, tilt: 58, selected: 0, dragMode: 'plane',
+  lang: 'th', cov3d: false, cov3dGap: false, showSlice: true, running: false, progress: 0,
+  inMk: '14', inMinPx: '4', pixMode: 'cal', inSig: '0.1', usePix: true, mk: null, showRays: true, sliceMode: 'cov',
+  inAncN: '4', inAncMin: '3', inAncClr: '0.15', ancOn: true, ancSel: 0, ancRays: true
+};
+function TX(th, en) { return S.lang === 'en' ? en : th; }
+const tt = (o) => (o && typeof o === 'object') ? (o[S.lang] || o.th) : o;
+try { const sv = localStorage.getItem('pm_lang'); if (sv === 'en' || sv === 'th') S.lang = sv; } catch (e) { /* storage unavailable */ }
+let sim = null, live = null, runId = 0, runCount = 0, timer = null, kk = 6, simSeq = 0, drag = null, rafId = 0, lastPtr = null;
+const ACC = '#4d2994';
+const $ = (id) => document.getElementById(id);
+const f1 = (x) => x.toFixed(1), f2 = (x) => x.toFixed(2);
+
+/* ======================= parsing ======================= */
+function num(v, d, lo, hi) {
+  let x = parseFloat(String(v).replace(',', '.'));
+  if (!isFinite(x)) x = d;
+  return Math.min(hi, Math.max(lo, x));
+}
+function curBrand() { return BRANDS.find((b) => b.key === S.brand) || BRANDS[0]; }
+function curModel() { const b = curBrand(); return b.models.find((m) => m.key === S.model) || b.models[0]; }
+
+function parse() {
+  const W = num(S.inW, 8, 2, 40), L = num(S.inL, 6, 2, 40), H = num(S.inH, 3.5, 1.5, 15);
+  const capH = num(S.inCapH, 2.2, 0.5, H);
+  const margin = num(S.inMargin, 0.3, 0, Math.max(0, Math.min(W, L) / 2 - 0.5));
+  const N = Math.round(num(S.inN, 12, 1, 64));
+  const k = Math.round(num(S.inK, 3, 1, Math.min(N, 8)));
+  const m = curModel();
+  const lens = m.lenses[Math.min(S.lens, m.lenses.length - 1)];
+  let hfov = lens.hfov, vfov = lens.vfov, hres = m.hres, vres = m.vres;
+  if (m.custom) {
+    hfov = num(S.cHF, 56, 10, 170); vfov = num(S.cVF, 46, 10, 170);
+    hres = Math.round(num(S.cHR, 1280, 160, 8192)); vres = Math.round(num(S.cVR, 1024, 160, 8192));
+  }
+  const mkD = num(S.inMk, 14, 1, 100) / 1000, minPx = num(S.inMinPx, 4, 0.5, 400), usePix = S.usePix !== false;
+  const fpx = (hres / (2 * Math.tan(hfov * Math.PI / 360)) + vres / (2 * Math.tan(vfov * Math.PI / 360))) / 2;
+  const useActive = S.marker === 'active' && !!m.ra;
+  const baseRange = useActive ? m.ra : m.rp;
+  const rangeAssumed = baseRange == null && S.inRange.trim() === '';
+  const range = num(S.inRange, baseRange == null ? (m.rAssume || 30) : baseRange, 2, 120);
+  const refD = (curBrand().refD || 14) / 1000;
+  // pixel model: calibrated = spec range reproduced at 14 mm marker + 4 px threshold (OptiTrack test conditions), scaled by D / sqrt(threshold)
+  const noSpec = baseRange == null && S.inRange.trim() === '';
+  const calib = S.pixMode !== 'geo' && !noSpec, pixOn = usePix && !useActive;
+  const kb = (pixOn && calib) ? range / (fpx * refD * Math.sqrt(Math.PI / 16)) : 1;
+  const zPix = pixOn ? kb * fpx * mkD * Math.sqrt(Math.PI / (4 * minPx)) : Infinity;
+  const rangeCap = (pixOn && (calib || noSpec)) ? Infinity : range;
+  const tiers = Math.min(N, Math.round(num(S.inTiers, 1, 1, 3)));
+  const autoTop = Math.max(0.5, Math.min(H - 0.2, Math.max(capH + 0.6, 2.4)));
+  const zTop = num(S.inZHigh, autoTop, 0.5, H - 0.05);
+  let zLow = num(S.inZLow, 1.2, 0.3, H - 0.05);
+  if (tiers > 1) zLow = Math.max(0.3, Math.min(zLow, zTop - 0.3));
+  return { W, L, H, capH, margin, N, k, model: m, hfov, vfov, hres, vres, range, baseRange, rangeAssumed, useActive,
+    wallOnly: !!S.wallOnly, tiers, autoTop, zTop, zLow, stagger: S.stagger !== false, mkD, minPx, usePix, fpx, zPix, kb, rangeCap, pixOn, calib, refD, noSpec };
+}
+function sigOf(P) {
+  return [P.W, P.L, P.H, P.capH, P.margin, P.N, P.k, P.model.key, P.hfov, P.vfov, P.range, P.wallOnly ? 1 : 0, P.tiers, P.zTop, P.zLow, P.stagger ? 1 : 0, P.mkD, P.minPx, P.usePix ? 1 : 0, P.calib ? 1 : 0, P.noSpec ? 1 : 0, P.hres, P.vres, P.useActive ? 1 : 0].join('|');
+}
+
+/* ======================= geometry engine ======================= */
+function makeGrid(P) {
+  const tw = P.W - 2 * P.margin, tl = P.L - 2 * P.margin, th = P.capH;
+  const cell = Math.max(0.12, Math.cbrt(tw * tl * th / 12000));
+  const nx = Math.max(1, Math.round(tw / cell)), ny = Math.max(1, Math.round(tl / cell)), nz = Math.max(1, Math.round(th / cell));
+  const cx = tw / nx, cy = tl / ny, cz = th / nz, n = nx * ny * nz;
+  const xs = new Float32Array(n), ys = new Float32Array(n), zs = new Float32Array(n);
+  for (let kz = 0; kz < nz; kz++) for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+    const idx = (kz * ny + j) * nx + i;
+    xs[idx] = P.margin + (i + 0.5) * cx; ys[idx] = P.margin + (j + 0.5) * cy; zs[idx] = (kz + 0.5) * cz;
+  }
+  return { tw, tl, th, nx, ny, nz, cx, cy, cz, n, xs, ys, zs, cellVol: cx * cy * cz };
+}
+function basis(c) {
+  const cy = Math.cos(c.yaw), sy = Math.sin(c.yaw), cp = Math.cos(c.pitch), sp = Math.sin(c.pitch);
+  return { fx: cp * cy, fy: cp * sy, fz: -sp, rx: -sy, ry: cy, ux: sp * cy, uy: sp * sy, uz: cp };
+}
+function computeVis(c, P, G, out) {
+  const b = basis(c);
+  const tH = Math.tan(P.hfov * Math.PI / 360), tV = Math.tan(P.vfov * Math.PI / 360);
+  const tr = c.roll ? tV : tH, tu = c.roll ? tH : tV, R2 = P.rangeCap * P.rangeCap, zmax = P.zPix;
+  const xs = G.xs, ys = G.ys, zs = G.zs, n = G.n;
+  for (let i = 0; i < n; i++) {
+    const dx = xs[i] - c.x, dy = ys[i] - c.y, dz = zs[i] - c.z;
+    const z = dx * b.fx + dy * b.fy + dz * b.fz;
+    if (z < 0.3 || z > zmax || dx * dx + dy * dy + dz * dz > R2) { out[i] = 0; continue; }
+    let a = dx * b.rx + dy * b.ry; if (a < 0) a = -a;
+    if (a > z * tr) { out[i] = 0; continue; }
+    let u = dx * b.ux + dy * b.uy + dz * b.uz; if (u < 0) u = -u;
+    out[i] = u > z * tu ? 0 : 1;
+  }
+}
+
+/* ---------- anchor marker suggestion (Motive Continuous Calibration) ---------- */
+// Heuristic of this tool (OptiTrack docs give no numeric rule): anchors stay outside the capture volume, each seen by >= min cameras,
+// every camera should see >= 2 anchors, anchors spread apart in 3D, and low predicted triangulation error at the anchor.
+let ancCache = { key: '', val: null };
+function anchorPlan(res, P, G, n, minC, clr, sigPx) {
+  const cams = res.cams, N = cams.length, pcs = prepCams(cams, P), inset = 0.08, T = 2;
+  const per = 2 * (P.W + P.L), ds = Math.max(0.4, per * (P.H / 0.4) / 1400);
+  const zTop = P.H - 0.12, zAbove = P.capH + clr + 0.05;
+  let zs = []; for (let z = 0.2; z <= zTop + 1e-6; z += 0.4) zs.push(+z.toFixed(3));
+  if (zAbove <= zTop) zs.push(+zAbove.toFixed(3));
+  if (zTop >= 0.2) zs.push(+zTop.toFixed(3));
+  zs = Array.from(new Set(zs)).sort((a, b) => a - b);
+  const nxw = Math.max(1, Math.round((P.W - 2 * inset) / ds)), nyw = Math.max(1, Math.round((P.L - 2 * inset) / ds));
+  const line = [];
+  for (let i = 0; i <= nxw; i++) { const x = inset + (P.W - 2 * inset) * i / nxw; line.push([x, inset], [x, P.L - inset]); }
+  for (let j = 1; j < nyw; j++) { const y = inset + (P.L - 2 * inset) * j / nyw; line.push([inset, y], [P.W - inset, y]); }
+  const x0 = P.margin - clr, x1 = P.W - P.margin + clr, y0 = P.margin - clr, y1 = P.L - P.margin + clr, zc = P.capH + clr;
+  const cand = [];
+  line.forEach((q) => zs.forEach((z) => {
+    const x = q[0], y = q[1];
+    if (x > x0 && x < x1 && y > y0 && y < y1 && z < zc) return;           // inside / too close to the capture volume
+    for (let c = 0; c < N; c++) if (Math.hypot(x - cams[c].x, y - cams[c].y, z - cams[c].z) < 0.4) return; // camera mount clutter
+    const seen = []; for (let c = 0; c < N; c++) if (visCode(pcs[c], P, x, y, z) === 0) seen.push(c);
+    const e = errUnit(pcs, P, x, y, z);
+    cand.push({ x, y, z, seen, cnt: seen.length, sig: e > 0 ? e * sigPx * 1000 : Infinity });
+  }));
+  let effMin = minC, pool = cand.filter((c) => c.cnt >= effMin);
+  while (pool.length < n && effMin > 1) { effMin--; pool = cand.filter((c) => c.cnt >= effMin); }
+  if (!pool.length) return { cams: N, none: true, nCand: cand.length, effMin: effMin, noSpace: cand.length === 0 };
+  const sg = pool.map((c) => c.sig).filter(isFinite).sort((a, b) => a - b), sref = sg.length ? sg[sg.length >> 1] : 1;
+  const Dref = 0.5 * Math.hypot(P.W, P.L, P.H);
+  const score = (set) => {
+    const cnt = new Array(N).fill(0); let acc = 0, md = Infinity;
+    set.forEach((c) => { c.seen.forEach((i) => cnt[i]++); acc += isFinite(c.sig) ? 1 / (1 + c.sig / sref) : 0; });
+    for (let i = 0; i < set.length; i++) for (let j = i + 1; j < set.length; j++) md = Math.min(md, Math.hypot(set[i].x - set[j].x, set[i].y - set[j].y, set[i].z - set[j].z));
+    const cov = cnt.reduce((a, v) => a + Math.min(v, T), 0) / (N * T), spread = set.length > 1 ? Math.min(1, md / Dref) : 1;
+    return 0.5 * cov + 0.3 * spread + 0.2 * acc / set.length;
+  };
+  const m = Math.min(n, pool.length), set = [];
+  for (let k = 0; k < m; k++) {
+    let best = null, bs = -1;
+    pool.forEach((c) => { if (set.includes(c)) return; const v = score(set.concat([c])); if (v > bs) { bs = v; best = c; } });
+    set.push(best);
+  }
+  for (let pass = 0; pass < 4; pass++) {
+    let moved = false;
+    for (let i = 0; i < set.length; i++) {
+      let cur = score(set), bc = null;
+      pool.forEach((c) => { if (set.includes(c)) return; const t = set.slice(); t[i] = c; const v = score(t); if (v > cur + 1e-6) { cur = v; bc = c; } });
+      if (bc) { set[i] = bc; moved = true; }
+    }
+    if (!moved) break;
+  }
+  const cnt = new Array(N).fill(0); set.forEach((c) => c.seen.forEach((i) => cnt[i]++));
+  const wl = (c) => { const d = [c.x, P.W - c.x, c.y, P.L - c.y], k = d.indexOf(Math.min.apply(null, d)); return ['x=0', 'x=' + f1(P.W), 'y=0', 'y=' + f1(P.L)][k]; };
+  return { cams: N, none: false, effMin, nCand: cand.length, nPool: pool.length, score: score(set), set: set.map((c) => ({ x: c.x, y: c.y, z: c.z, cnt: c.cnt, sig: c.sig, wall: wl(c) })), camCnt: cnt,
+    minAnchorCams: Math.min.apply(null, set.map((c) => c.cnt)), camsNone: cnt.filter((v) => v === 0).length, camsLow: cnt.filter((v) => v < T).length, T: T };
+}
+function getAnchors(res, P, G, sigPx) {
+  const n = Math.round(num(S.inAncN, 4, 1, 12)), minC = Math.round(num(S.inAncMin, 3, 1, 12)), clr = num(S.inAncClr, 0.15, 0, 1);
+  const key = [n, minC, clr, sigPx, sigOf(P), P.mkD, P.zPix, P.rangeCap, res.cams.map((c) => [c.x, c.y, c.z, c.yaw, c.pitch, c.roll].map((v) => (+v || 0).toFixed(3)).join(',')).join(';')].join('|');
+  if (ancCache.key !== key) ancCache = { key: key, val: Object.assign(anchorPlan(res, P, G, n, minC, clr, sigPx), { n: n, minC: minC, clr: clr }) };
+  return ancCache.val;
+}
+function renderAnchorUI(A, res, P) {
+  const cards = $('ancCards'), tb = $('ancTable'), note = $('ancNote');
+  if (A.none) {
+    $('ancSelRow').innerHTML = ''; $('ancDetail').textContent = '';
+    cards.innerHTML = ''; tb.innerHTML = '';
+    note.textContent = A.noSpace
+      ? TX('ไม่มีพื้นที่ผนังนอก capture volume ให้ติด anchor (capture volume ชิดผนังและสูงเกือบถึงเพดาน) ลองลดระยะห่างจาก capture volume เพิ่ม margin หรือลดความสูงที่ต้องการ capture', 'There is no wall space outside the capture volume for anchors (the capture volume reaches the walls and almost the ceiling). Try a smaller clearance, a larger margin, or a lower capture height.')
+      : TX('มีตำแหน่งนอก capture volume แต่ไม่มีกล้องเห็น ลองลดเกณฑ์ pixel หรือปรับตำแหน่งกล้อง', 'There are positions outside the capture volume, but no camera sees them. Try a lower pixel threshold or different camera positions.');
+    return;
+  }
+  const sigs = A.set.map((a) => a.sig).filter(isFinite), ms = sigs.length ? sigs.reduce((a, b) => a + b, 0) / sigs.length : null;
+  const c = [
+    [TX('anchor ที่แนะนำ', 'Suggested anchors'), String(A.set.length), TX('จากตำแหน่งที่เลือกได้ ', 'from ') + A.nPool + TX(' จุด (ทดสอบ ', ' eligible points (') + A.nCand + TX(' จุดนอก capture volume)', ' tested outside the capture volume)')],
+    [TX('anchor ที่เห็นน้อยที่สุด', 'Least-seen anchor'), A.minAnchorCams + TX(' กล้อง', ' cams'), TX('เกณฑ์ Motive: ทุก anchor ต้องมีกล้องเห็นอย่างน้อย 1 ตัว', 'Motive requirement: every anchor seen by at least 1 camera') + (A.minAnchorCams >= 1 ? ' ✓' : ' ✗')],
+    [TX('กล้องที่เห็น anchor ≥ ', 'Cameras seeing ≥ ') + A.T + TX(' ตัว', ' anchors'), (A.cams - A.camsLow) + ' / ' + A.cams, A.camsNone ? A.camsNone + TX(' กล้องไม่เห็น anchor เลย', ' camera(s) see no anchor') : TX('ทุกกล้องเห็น anchor อย่างน้อย 1 ตัว', 'every camera sees at least one anchor')],
+    [TX('Error 3D ที่ anchor', '3D error at anchors'), ms === null ? '—' : f2(ms) + ' mm', TX('เฉลี่ย ที่ σ centroid ตามที่ตั้งไว้', 'mean, at the centroid σ set above')]
+  ];
+  S.ancSel = Math.min(Math.max(0, S.ancSel | 0), A.set.length - 1);
+  $('ancSelRow').innerHTML = A.set.map((a, i) => '<button class="chip' + (i === S.ancSel ? ' on' : '') + '" data-act="anc" data-v="' + i + '">A' + (i + 1) + '</button>').join('')
+    + '<button class="btn' + (S.ancRays ? ' on' : '') + '" data-act="ancrays">' + (S.ancRays ? TX('รังสีไปที่ anchor: เปิด', 'Rays to anchor: on') : TX('รังสีไปที่ anchor: ปิด', 'Rays to anchor: off')) + '</button>';
+  { const a = A.set[S.ancSel], pcs = prepCams(res.cams, P), ok = [], no = [];
+    pcs.forEach((pc, i) => { const code = visCode(pc, P, a.x, a.y, a.z); if (code === 0) ok.push(i + 1); else no.push((i + 1) + ' (' + stat(code) + ')'); });
+    $('ancDetail').textContent = 'A' + (S.ancSel + 1) + ' · ' + TX('กล้องที่เห็น: ', 'Seen by cameras: ') + (ok.join(', ') || '—') + ' · ' + TX('ไม่เห็น: ', 'Not seen: ') + (no.join(', ') || '—'); }
+  cards.innerHTML = c.map((x) => '<div class="card"><div class="lab">' + x[0] + '</div><div class="v">' + x[1] + '</div><div class="note">' + x[2] + '</div></div>').join('');
+  tb.innerHTML = '<div class="tr h"><span>#</span><span>x (m)</span><span>y (m)</span><span>z (m)</span><span>' + TX('ผนัง', 'Wall') + '</span><span>' + TX('กล้องที่เห็น', 'Cameras') + '</span><span>σ 3D (mm)</span></div>'
+    + A.set.map((a, i) => '<div class="tr"><span style="font-weight:600">A' + (i + 1) + '</span><span>' + f2(a.x) + '</span><span>' + f2(a.y) + '</span><span>' + f2(a.z) + '</span><span>' + a.wall + '</span><span>' + a.cnt + '</span><span>' + (isFinite(a.sig) ? f2(a.sig) : '—') + '</span></div>').join('');
+  const warn = A.effMin < A.minC ? TX('ไม่มีตำแหน่งที่ถึงเกณฑ์ ' + A.minC + ' กล้องมากพอ จึงลดเกณฑ์เหลือ ' + A.effMin + ' กล้อง · ', 'Not enough positions reach ' + A.minC + ' cameras, so the minimum was lowered to ' + A.effMin + ' · ') : '';
+  note.textContent = warn + TX('เกณฑ์การเลือกเป็นแนวทางของเครื่องมือนี้ (เอกสาร OptiTrack ไม่ได้กำหนดจำนวนหรือความสูงของ anchor): anchor ต้องอยู่นอก capture volume และห่างจากตำแหน่งกล้อง ≥ 0.4 m, ให้แต่ละกล้องเห็น anchor อย่างน้อย 2 ตัว, กระจายห่างกันใน 3D และ error ที่ anchor ต่ำ (น้ำหนัก 50/30/20) · ตามเอกสาร OptiTrack: anchor ต้องยึดแน่นไม่ขยับ, แนะนำ active marker เพราะมี ID, ต้อง calibrate กล้องเสร็จก่อนกำหนด anchor ใน Motive · ไม่ได้จำลองการบังจากวัตถุ/คน',
+    'Selection rules are this tool\'s own heuristic (the OptiTrack docs give no number, height or spacing for anchors): outside the capture volume and ≥ 0.4 m from any camera, each camera seeing ≥ 2 anchors, anchors spread apart in 3D, and low error at the anchor (weights 50/30/20) · Per OptiTrack docs: anchors must stay rigidly fixed, active markers are preferred because they carry an ID, and camera calibration must be finished before assigning anchors in Motive · Occlusion by objects or people is not modelled');
+}
+/* ---------- marker: pixel size, visibility reason, triangulation error ---------- */
+const VI = { d: 0, r2: 0, dx: 0, dy: 0, dz: 0 };
+function prepCams(cams, P) {
+  const tH = Math.tan(P.hfov * Math.PI / 360), tV = Math.tan(P.vfov * Math.PI / 360);
+  return cams.map((c) => ({ x: c.x, y: c.y, z: c.z, b: basis(c), tr: c.roll ? tV : tH, tu: c.roll ? tH : tV }));
+}
+// 0 = visible, 1 = behind / too close, 2 = outside FOV, 3 = beyond range, 4 = marker image below pixel threshold
+function visCode(pc, P, x, y, z) {
+  const b = pc.b, dx = x - pc.x, dy = y - pc.y, dz = z - pc.z;
+  const d = dx * b.fx + dy * b.fy + dz * b.fz, r2 = dx * dx + dy * dy + dz * dz;
+  VI.d = d; VI.r2 = r2; VI.dx = dx; VI.dy = dy; VI.dz = dz;
+  if (d < 0.3) return 1;
+  if (Math.abs(dx * b.rx + dy * b.ry) > d * pc.tr) return 2;
+  if (Math.abs(dx * b.ux + dy * b.uy + dz * b.uz) > d * pc.tu) return 2;
+  if (r2 > P.rangeCap * P.rangeCap) return 3;
+  if (d > P.zPix) return 4;
+  return 0;
+}
+// expected 3D RMS position error (m) for centroid noise of 1 px; -1 = fewer than 2 cameras; -2 = rays nearly parallel
+function errUnit(pcs, P, x, y, z) {
+  let a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, n = 0;
+  const F2 = P.fpx * P.fpx;
+  for (let i = 0; i < pcs.length; i++) {
+    if (visCode(pcs[i], P, x, y, z) !== 0) continue;
+    n++;
+    const k = 1 / VI.r2, w = F2 * k, wk = w * k, dx = VI.dx, dy = VI.dy, dz = VI.dz;
+    a += w - wk * dx * dx; d += w - wk * dy * dy; f += w - wk * dz * dz;
+    b -= wk * dx * dy; c -= wk * dx * dz; e -= wk * dy * dz;
+  }
+  if (n < 2) return -1;
+  const m1 = d * f - e * e, m2 = a * f - c * c, m3 = a * d - b * b;
+  const det = a * m1 - b * (b * f - c * e) + c * (b * e - c * d), t3 = (a + d + f) / 3;
+  if (!(det > 1e-9 * t3 * t3 * t3)) return -2;
+  return Math.sqrt((m1 + m2 + m3) / det);
+}
+const errCache = new WeakMap();
+function errEntry(res, P) {
+  let e = errCache.get(res);
+  if (!e || e.P !== P) { e = { P, pcs: prepCams(res.cams, P), slices: {}, stats: null }; errCache.set(res, e); }
+  return e;
+}
+function errStats(res, P, G) {
+  const e = errEntry(res, P); if (e.stats) return e.stats;
+  const vals = [], kmin = Math.max(2, P.k);
+  for (let q = 0; q < G.n; q++) {
+    if (res.cov[q] < kmin) continue;
+    const v = errUnit(e.pcs, P, G.xs[q], G.ys[q], G.zs[q]); if (v > 0) vals.push(v);
+  }
+  vals.sort((u, v) => u - v);
+  const n = vals.length; let sum = 0; for (let i = 0; i < n; i++) sum += vals[i];
+  e.stats = n ? { n, mean: sum / n, med: vals[n >> 1], p95: vals[Math.min(n - 1, Math.floor(n * 0.95))] } : { n: 0 };
+  return e.stats;
+}
+function errSlice(res, P, G, kz) {
+  const e = errEntry(res, P); if (e.slices[kz]) return e.slices[kz];
+  const per = G.nx * G.ny, arr = new Float32Array(per);
+  for (let q = 0; q < per; q++) { const idx = kz * per + q; arr[q] = errUnit(e.pcs, P, G.xs[idx], G.ys[idx], G.zs[idx]); }
+  e.slices[kz] = arr; return arr;
+}
+const ERRPAL = ['#4d2994', '#a995dd', '#f3c6e0', '#ab1d79', '#8a1c1c'], ERRE = [0.8, 1.0, 1.4, 2.0];
+function errColor(v, med) {
+  if (v === -1) return '#E4E7EA';
+  if (v === -2) return ERRPAL[4];
+  const t = v / med; let b = 0; while (b < 4 && t > ERRE[b]) b++;
+  return ERRPAL[b];
+}
+// full analysis for the test marker: per-camera pixel size, triangulation error, expected residual
+function markerAnalysis(res, P, mk, sigPx) {
+  const pcs = prepCams(res.cams, P), rows = [], rays = [], sth = sigPx / P.fpx;
+  for (let i = 0; i < pcs.length; i++) {
+    const code = visCode(pcs[i], P, mk.x, mk.y, mk.z), d = VI.d, r = Math.sqrt(VI.r2);
+    const px = d > 0.001 ? P.kb * P.fpx * P.mkD / d : 0;
+    const off = r > 1e-6 ? Math.acos(Math.min(1, Math.max(-1, d / r))) * 180 / Math.PI : 0;
+    rows.push({ i, code, r, d, px, area: Math.PI * px * px / 4, off, sig: r * sth });
+    if (code === 0) rays.push({ ux: VI.dx / r, uy: VI.dy / r, uz: VI.dz / r, r });
+  }
+  const out = { rows, n: rays.length, degenerate: false, maxAng: 0 };
+  const n = rays.length;
+  if (n >= 2) {
+    let a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, s2 = 0, cmin = 1;
+    for (let i = 0; i < n; i++) {
+      const q = rays[i], w = 1 / ((q.r * sth) * (q.r * sth)); s2 += (q.r * sth) * (q.r * sth);
+      a += w * (1 - q.ux * q.ux); d += w * (1 - q.uy * q.uy); f += w * (1 - q.uz * q.uz);
+      b -= w * q.ux * q.uy; c -= w * q.ux * q.uz; e -= w * q.uy * q.uz;
+      for (let j = i + 1; j < n; j++) { const dt = q.ux * rays[j].ux + q.uy * rays[j].uy + q.uz * rays[j].uz; if (dt < cmin) cmin = dt; }
+    }
+    out.maxAng = Math.acos(Math.max(-1, Math.min(1, cmin))) * 180 / Math.PI;
+    const m1 = d * f - e * e, m2 = a * f - c * c, m3 = a * d - b * b;
+    const det = a * m1 - b * (b * f - c * e) + c * (b * e - c * d), t3 = (a + d + f) / 3;
+    if (!(det > 1e-9 * t3 * t3 * t3)) out.degenerate = true;
+    else {
+      out.sx = Math.sqrt(m1 / det); out.sy = Math.sqrt(m2 / det); out.sz = Math.sqrt(m3 / det);
+      out.rms = Math.sqrt((m1 + m2 + m3) / det);
+      out.resid = Math.sqrt((s2 / n) * (2 * n - 3) / n);
+    }
+  }
+  return out;
+}
+function scoreTable(k) {
+  const F = new Float32Array(300), a = 0.3;
+  for (let c = 0; c < 300; c++) F[c] = c >= k ? 1 + a : a * c / k;
+  return F;
+}
+function makeState(P, G, cams) {
+  const n = G.n, st = { cams, vis: [], cov: new Uint8Array(n), tmp: new Uint8Array(n), F: scoreTable(P.k), score: 0 };
+  for (let i = 0; i < cams.length; i++) {
+    const v = new Uint8Array(n);
+    computeVis(cams[i], P, G, v); st.vis.push(v);
+    for (let q = 0; q < n; q++) st.cov[q] += v[q];
+  }
+  let sc = 0; for (let q = 0; q < n; q++) sc += st.F[st.cov[q]];
+  st.score = sc;
+  return st;
+}
+function summarize(st, P, G) {
+  const n = G.n, hist = new Int32Array(300); let sum = 0;
+  for (let q = 0; q < n; q++) { hist[st.cov[q]]++; sum += st.cov[q]; }
+  const atLeast = [];
+  for (let c = 0; c <= 8; c++) { let t = 0; for (let j = c; j < 300; j++) t += hist[j]; atLeast.push(t); }
+  return { cams: st.cams.map((c) => Object.assign({}, c)), cov: Uint8Array.from(st.cov), atLeast, mean: sum / n,
+    volK: atLeast[P.k] * G.cellVol, fracK: atLeast[P.k] / n, vol2: atLeast[2] * G.cellVol, volTotal: n * G.cellVol };
+}
+function tierPlan(P) {
+  const T = Math.min(P.tiers, P.N), counts = [], heights = [], base = Math.floor(P.N / T), rem = P.N % T;
+  for (let t = 0; t < T; t++) {
+    counts.push(base + (t < rem ? 1 : 0));
+    heights.push(T === 1 ? P.zTop : P.zTop + (P.zLow - P.zTop) * t / (T - 1));
+  }
+  return { counts, heights };
+}
+function baselineCams(P) {
+  const out = [], per = 2 * (P.W + P.L), e = 0.05, tz = P.capH * 0.45, plan = tierPlan(P), offs = [0.5, 1.0, 0.25];
+  for (let t = 0; t < plan.counts.length; t++) {
+    const n = plan.counts[t], step = per / n, zc = plan.heights[t], off = P.stagger ? offs[t] : 0.5;
+    for (let j = 0; j < n; j++) {
+      const s = ((j + off) * step) % per; let x, y;
+      if (s < P.W) { x = s; y = e; }
+      else if (s < P.W + P.L) { x = P.W - e; y = s - P.W; }
+      else if (s < 2 * P.W + P.L) { x = P.W - (s - P.W - P.L); y = P.L - e; }
+      else { x = e; y = P.L - (s - 2 * P.W - P.L); }
+      x = Math.min(P.W, Math.max(0, x)); y = Math.min(P.L, Math.max(0, y));
+      const hd = Math.hypot(P.W / 2 - x, P.L / 2 - y);
+      out.push({ x, y, z: zc, yaw: Math.atan2(P.L / 2 - y, P.W / 2 - x), pitch: Math.atan2(zc - tz, hd), roll: 0 });
+    }
+  }
+  return out;
+}
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+// camera stands inside the capture volume (+ clearance) and is not wall-mounted -> would obstruct the subject
+const CAM_CLR = 0.3, WALL_TOL = 0.15;
+function intrudes(c, P) {
+  if (Math.min(c.x, P.W - c.x, c.y, P.L - c.y) <= WALL_TOL) return false;
+  return c.x > P.margin - CAM_CLR && c.x < P.W - P.margin + CAM_CLR && c.y > P.margin - CAM_CLR && c.y < P.L - P.margin + CAM_CLR && c.z < P.capH + CAM_CLR;
+}
+function annealStep(st, P, G, f, T, rnd) {
+  const gauss = () => Math.sqrt(-2 * Math.log(rnd() + 1e-12)) * Math.cos(2 * Math.PI * rnd());
+  const i = Math.floor(rnd() * st.cams.length), old = st.cams[i], nc = Object.assign({}, old);
+  const maxDim = Math.max(P.W, P.L), sp = maxDim * (0.25 * (1 - f) + 0.015), sa = 0.35 * (1 - f) + 0.03;
+  const zlo = Math.min(0.3, P.H / 2), zhi = P.H - 0.05, r = rnd();
+  if (r < 0.5) { nc.x += gauss() * sp; nc.y += gauss() * sp; nc.z += gauss() * sp * 0.6; }
+  else if (r < 0.82) { nc.yaw += gauss() * sa; nc.pitch += gauss() * sa; }
+  else if (r < 0.95) {
+    const tx = P.margin + rnd() * (P.W - 2 * P.margin), ty = P.margin + rnd() * (P.L - 2 * P.margin), tz = rnd() * P.capH;
+    nc.yaw = Math.atan2(ty - nc.y, tx - nc.x); nc.pitch = Math.atan2(nc.z - tz, Math.hypot(tx - nc.x, ty - nc.y));
+  } else if (Math.abs(P.hfov - P.vfov) > 1) nc.roll = nc.roll ? 0 : 1;
+  nc.x = Math.min(P.W, Math.max(0, nc.x)); nc.y = Math.min(P.L, Math.max(0, nc.y)); nc.z = Math.min(zhi, Math.max(zlo, nc.z));
+  nc.pitch = Math.min(1.48, Math.max(-1.05, nc.pitch));
+  if (P.wallOnly) {
+    const d = [nc.x, P.W - nc.x, nc.y, P.L - nc.y]; let w = 0; for (let q = 1; q < 4; q++) if (d[q] < d[w]) w = q;
+    if (w === 0) nc.x = 0; else if (w === 1) nc.x = P.W; else if (w === 2) nc.y = 0; else nc.y = P.L;
+  }
+  if (intrudes(nc, P)) return;
+  const nv = st.tmp, ov = st.vis[i], cov = st.cov, F = st.F, n = G.n;
+  computeVis(nc, P, G, nv);
+  let d = 0;
+  for (let q = 0; q < n; q++) if (nv[q] !== ov[q]) { const c = cov[q]; d += F[c + nv[q] - ov[q]] - F[c]; }
+  if (d >= 0 || rnd() < Math.exp(d / T)) {
+    for (let q = 0; q < n; q++) if (nv[q] !== ov[q]) cov[q] += nv[q] - ov[q];
+    st.vis[i] = nv; st.tmp = ov; st.cams[i] = nc; st.score += d;
+    if (st.score > st.bestScore) { st.bestScore = st.score; st.bestCams = st.cams.map((c) => Object.assign({}, c)); }
+  }
+}
+
+/* ======================= run optimizer ======================= */
+function run() {
+  const P = parse(), G = makeGrid(P), sig = sigOf(P), id = ++runId;
+  runCount++;
+  if (timer) clearTimeout(timer);
+  const baseCams = baselineCams(P);
+  const base = summarize(makeState(P, G, baseCams), P, G);
+  live = null;
+  sim = { id: ++simSeq, P, G, sig, base, opt: base, pending: true, man: null };
+  S.running = true; S.progress = 0; S.view = 'base'; S.selected = Math.min(S.selected, P.N - 1);
+  updateRunUI(); render();
+  const st = makeState(P, G, baseCams.map((c) => Object.assign({}, c)));
+  st.bestScore = st.score; st.bestCams = st.cams.map((c) => Object.assign({}, c));
+  const total = 700 * P.N + 6000, T0 = G.n * 0.0025, T1 = G.n * 0.00008, rnd = rng(20261022 + runCount * 7919);
+  let it = 0, chunks = 0;
+  const step = () => {
+    if (id !== runId) return;
+    const end = Math.min(total, it + 250);
+    for (; it < end; it++) { const f = it / total; annealStep(st, P, G, f, T0 * Math.pow(T1 / T0, f), rnd); }
+    chunks++;
+    if (it < total) {
+      if (chunks % 4 === 0) { S.progress = it / total; updateRunUI(); }
+      timer = setTimeout(step, 0);
+    } else {
+      sim.opt = summarize(makeState(P, G, st.bestCams), P, G); sim.pending = false;
+      if (S.view === 'base') S.view = 'opt';
+      S.running = false; S.progress = 1; updateRunUI(); render();
+    }
+  };
+  timer = setTimeout(step, 0);
+}
+function updateRunUI() {
+  $('run').disabled = S.running;
+  $('run').textContent = S.running ? TX('กำลังคำนวณ…', 'Optimising…') : TX('คำนวณตำแหน่งกล้อง', 'Optimise camera positions');
+  $('prog').style.width = Math.round(S.progress * 100) + '%';
+}
+
+/* ======================= manual editing ======================= */
+function ensureManual() {
+  if (!sim) return false;
+  if (S.running) { runId++; if (timer) clearTimeout(timer); sim.pending = false; S.running = false; updateRunUI(); }
+  if (!live) {
+    const src = S.view === 'base' ? sim.base : sim.opt;
+    live = makeState(sim.P, sim.G, src.cams.map((c) => Object.assign({}, c)));
+    sim.man = summarize(live, sim.P, sim.G);
+  }
+  return true;
+}
+function applyCam(i, patch) {
+  if (!sim || !live || !live.cams[i]) return;
+  const P = sim.P, G = sim.G, st = live, nc = Object.assign({}, st.cams[i], patch);
+  nc.x = Math.min(P.W, Math.max(0, nc.x)); nc.y = Math.min(P.L, Math.max(0, nc.y));
+  nc.z = Math.min(P.H, Math.max(Math.min(0.2, P.H / 2), nc.z)); nc.pitch = Math.min(1.48, Math.max(-1.05, nc.pitch));
+  const nv = st.tmp, ov = st.vis[i], cov = st.cov, n = G.n;
+  computeVis(nc, P, G, nv);
+  for (let q = 0; q < n; q++) if (nv[q] !== ov[q]) cov[q] += nv[q] - ov[q];
+  st.vis[i] = nv; st.tmp = ov; st.cams[i] = nc;
+  sim.man = summarize(st, P, G); S.view = 'man';
+  render();
+}
+function editCam(patch) { if (!ensureManual()) return; applyCam(Math.min(S.selected, live.cams.length - 1), patch); }
+function currentRes() { return !sim ? null : (S.view === 'base' ? sim.base : (S.view === 'man' && sim.man ? sim.man : sim.opt)); }
+
+/* ======================= colours ======================= */
+function cellColor(c, k) {
+  if (c === 0) return '#E4E7EA';
+  if (c < k) { const t = k <= 2 ? 0 : (c - 1) / (k - 1); return ['#F5E8CC', '#EBCF96', '#E3BE72'][Math.min(2, Math.round(t * 2))]; }
+  return ['#d0c3f1', '#9b84d6', '#4d2994', '#260762'][Math.min(3, c - k)];
+}
+function hexRgb(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+
+/* ======================= test marker + slice colours ======================= */
+function livePix(P) {
+  const q = parse();
+  return Object.assign({}, P, { mkD: q.mkD, minPx: q.minPx, usePix: q.usePix, calib: q.calib, pixOn: q.pixOn, kb: q.kb, zPix: q.zPix, rangeCap: q.rangeCap, noSpec: q.noSpec });
+}
+function getMk() {
+  const P = sim ? sim.P : parse();
+  if (!S.mk) return { x: P.W / 2, y: P.L / 2, z: 0 };
+  return { x: Math.min(P.W, Math.max(0, S.mk.x)), y: Math.min(P.L, Math.max(0, S.mk.y)), z: Math.min(P.H, Math.max(0, S.mk.z)) };
+}
+function setMk(patch) {
+  const m = Object.assign(getMk(), patch);
+  if (![m.x, m.y, m.z].every(isFinite)) return;
+  S.mk = m; render();
+}
+function sliceColors(res, P, G, kz) {
+  const per = G.nx * G.ny, out = new Array(per);
+  if (S.sliceMode === 'err') {
+    const arr = errSlice(res, P, G, kz), st = errStats(res, P, G), med = st.n ? st.med : 0.001;
+    for (let q = 0; q < per; q++) out[q] = errColor(arr[q], med);
+  } else for (let q = 0; q < per; q++) out[q] = cellColor(res.cov[kz * per + q], P.k);
+  return out;
+}
+
+/* ======================= UI: inputs ======================= */
+function fillSelect(el, items, value) { el.innerHTML = items.map((o) => '<option value="' + o.v + '">' + o.t + '</option>').join(''); el.value = value; }
+function syncInputs() {
+  document.querySelectorAll('input[data-k]').forEach((el) => { if (document.activeElement !== el) el.value = S[el.dataset.k]; });
+  $('ancOn').checked = !!S.ancOn; $('stagger').checked = S.stagger !== false; $('wallOnly').checked = !!S.wallOnly;
+  $('inTiers').value = S.inTiers; $('marker').value = S.marker; $('usePix').checked = S.usePix !== false; $('pixMode').value = S.pixMode;
+}
+function updateSpec() {
+  const P = parse(), m = P.model;
+  fillSelect($('brand'), BRANDS.map((b) => ({ v: b.key, t: b.name })), S.brand);
+  fillSelect($('model'), curBrand().models.map((x) => ({ v: x.key, t: tt(x.name) })), S.model);
+  $('lensWrap').hidden = m.lenses.length < 2;
+  if (m.lenses.length >= 2) fillSelect($('lens'), m.lenses.map((l, i) => ({ v: i, t: tt(l.label) + ' · ' + l.hfov + '°×' + l.vfov + '°' })), Math.min(S.lens, m.lenses.length - 1));
+  $('customWrap').hidden = !m.custom;
+  const noActive = !m.ra;
+  $('marker').disabled = noActive;
+  if (noActive && S.marker === 'active') { S.marker = 'passive'; $('marker').value = 'passive'; }
+  $('inRange').placeholder = P.baseRange == null ? 'TBD' : String(P.baseRange);
+  const lens = m.lenses[Math.min(S.lens, m.lenses.length - 1)];
+  const mmpx = 2 * 5000 * Math.tan(P.hfov * Math.PI / 360) / P.hres;
+  $('specLine').textContent = P.hres + '×' + P.vres + ' px · FOV ' + P.hfov + '°×' + P.vfov + '°' + (m.hz ? ' · ' + m.hz + ' Hz' : '') + ' · ' + f1(mmpx) + TX(' mm/px ที่ 5 m', ' mm/px at 5 m') + (m.custom ? '' : TX(' · เลนส์ ', ' · lens ') + tt(lens.label).split(' (')[0]);
+  const notes = [];
+  if (m.note) notes.push(tt(m.note));
+  if (P.rangeAssumed) notes.push(P.pixOn
+    ? TX('ไม่มีระยะจากผู้ผลิต จึงประมาณระยะจากขนาด pixel ของ marker ด้วยโมเดลเรขาคณิตล้วน (ไม่รวม bloom ของ marker สะท้อนแสง ผลจึงมักสั้นกว่าความจริง) กรอกระยะสูงสุดเองถ้ามีข้อมูลจากผู้ผลิตหรือการวัดจริง', 'The manufacturer gives no range, so the range is estimated from the marker\'s pixel size with a pure-geometry model (no bloom of reflective markers, so it is usually shorter than reality). Enter the max range yourself if you have manufacturer or measured data.')
+    : TX('ยังไม่มีระยะจากผู้ผลิต จึงใช้ค่าสมมติ ' + f1(P.range) + ' m ในการคำนวณ กรอกระยะสูงสุดเองเพื่อให้ผลตรงกับหน้างาน', 'The manufacturer gives no range, so ' + f1(P.range) + ' m is assumed. Enter the max range yourself to match your site.'));
+  if (m.key === 'x22') notes.push(TX('FOV แนวตั้ง 49° ตามแผ่นสเปก v13 (หน้าเว็บเก่าระบุ 47°)', 'Vertical FOV 49° per spec sheet v13 (the older web page says 47°)'));
+  $('modelNote').hidden = notes.length === 0; $('modelNote').textContent = notes.join(' · ');
+  $('inZHigh').placeholder = P.autoTop.toFixed(1);
+  $('zLowWrap').hidden = P.tiers < 2; $('staggerWrap').hidden = P.tiers < 2;
+  const tp = tierPlan(P);
+  $('tierNote').textContent = P.tiers + TX(' ชั้น: ', ' tier(s): ') + tp.counts.map((n, i) => n + TX(' ตัวที่ z = ', ' cameras at z = ') + tp.heights[i].toFixed(2) + ' m').join(' · ');
+  const rn = curBrand().refNote, rd = (curBrand().refD || 14);
+  $('pixNote').textContent = TX(tt(rn) + ' · โหมดสอบเทียบ: marker ' + rd + ' mm ที่เกณฑ์ 4 px ให้ระยะเท่าสเปก (สมมติว่า 4 px คือเกณฑ์ตรวจจับที่ใช้ตอนวัดระยะ) แล้วระยะเปลี่ยนตาม ขนาด marker ÷ √เกณฑ์ · exposure, gain, f-stop ไม่อยู่ในโมเดล',
+    tt(rn) + ' · Calibrated mode: a ' + rd + ' mm marker at a 4 px threshold reproduces the spec range (assuming 4 px is the detection threshold used when the range was measured); range then scales with marker size ÷ √threshold · exposure, gain and f-stop are not modelled');
+  const dm = P.mkD * 1000, pw = $('pixWarn');
+  const rTxt = P.noSpec ? (P.pixOn ? TX('ไม่ระบุ', 'not given') : TX('สมมติ ', 'assumed ') + f1(P.range) + ' m') : f1(P.range) + ' m';
+  if (!P.usePix) { $('pixLine').textContent = TX('ปิดโมเดล pixel: ใช้ระยะ ' + (P.noSpec ? 'สมมติ ' : 'ผู้ผลิต ') + f1(P.range) + ' m อย่างเดียว', 'Pixel model off: using only the ' + (P.noSpec ? 'assumed ' : 'manufacturer ') + 'range of ' + f1(P.range) + ' m'); pw.hidden = true; }
+  else if (P.useActive) { $('pixLine').textContent = TX('Active marker: ใช้ระยะผู้ผลิต ' + f1(P.range) + ' m โดยตรง (ไม่ใช้โมเดลขนาด pixel)', 'Active marker: using the manufacturer range of ' + f1(P.range) + ' m directly (pixel-size model not used)'); pw.hidden = true; }
+  else {
+    $('pixLine').textContent = (P.calib ? TX('สอบเทียบกับสเปก (ค่าขยายภาพ ×', 'Calibrated to spec (image gain ×') + P.kb.toFixed(2) + ') · ' : TX('เรขาคณิตล้วน · ', 'Pure geometry · ')) + 'f ≈ ' + P.fpx.toFixed(0) + ' px · marker ' + f1(dm) + TX(' mm ที่ 5 m = ', ' mm at 5 m = ') + f1(P.kb * P.fpx * P.mkD / 5) + TX(' px · ลึกสูงสุด (≥ ', ' px · max depth (≥ ') + P.minPx + ' px²): ' + f1(P.zPix) + TX(' m · ระยะผู้ผลิต: ', ' m · manufacturer range: ') + rTxt;
+    pw.hidden = !(!P.calib && !P.noSpec && P.zPix < P.range * 0.8);
+    if (!pw.hidden) pw.textContent = TX('โหมดเรขาคณิตล้วนให้ระยะ ' + f1(P.zPix) + ' m สั้นกว่าสเปก ' + f1(P.range) + ' m เพราะไม่รวม bloom ของ marker สะท้อนแสง ใช้โหมดสอบเทียบกับสเปกเพื่อให้ตรงกับเงื่อนไขทดสอบของผู้ผลิต', 'Pure-geometry mode gives a range of ' + f1(P.zPix) + ' m, shorter than the spec ' + f1(P.range) + ' m, because it ignores the bloom of reflective markers. Use the calibrated mode to match the manufacturer\'s test conditions.');
+  }
+  $('stale').hidden = !(sim && sim.sig !== sigOf(P));
+}
+
+/* ======================= UI: results ======================= */
+function render() {
+  if (!sim) return;
+  const res = currentRes(), P = sim.P, G = sim.G;
+  const gain = sim.base.volK > 0 ? (sim.opt.volK / sim.base.volK - 1) * 100 : null;
+  const sigPx = num(S.inSig, 0.1, 0.005, 5), es = errStats(res, P, G);
+  const cards = [
+    ['Capture volume (' + TX('เห็น ≥ ', 'seen by ≥ ') + P.k + TX(' กล้อง)', ' cameras)'), f1(res.volK) + ' m³', f1(res.fracK * 100) + TX('% ของพื้นที่ที่ต้องการ (', '% of the required area (') + f1(res.volTotal) + ' m³)'],
+    [TX('เทียบกับวางเรียงรอบห้อง', 'Versus perimeter layout'), sim.pending ? TX('กำลังคำนวณ', 'Optimising') : (gain === null ? '—' : (gain >= 0 ? '+' : '') + f1(gain) + '%'), TX('วางเรียง: ', 'Perimeter: ') + f1(sim.base.volK) + ' m³ · ' + TX('ปรับแล้ว: ', 'Optimised: ') + f1(sim.opt.volK) + ' m³'],
+    [TX('เห็น ≥ 2 กล้อง', 'Seen by ≥ 2 cameras'), f1(res.vol2) + ' m³', f1(res.atLeast[2] / G.n * 100) + TX('% ของพื้นที่ (ขั้นต่ำสำหรับ triangulation)', '% of the area (minimum for triangulation)')],
+    [TX('จำนวนกล้องเฉลี่ยต่อจุด', 'Mean cameras per point'), f2(res.mean), P.N + TX(' ตัว · ', ' cameras · ') + tt(P.model.name) + TX(' · ระยะ ≤ ', ' · range ≤ ') + f1(Math.min(P.rangeCap, P.zPix)) + ' m'],
+    [TX('Error 3D คาดการณ์ (เฉลี่ยใน capture volume)', 'Predicted 3D error (mean over capture volume)'), es.n ? f2(es.mean * sigPx * 1000) + ' mm' : '—', es.n ? 'p95 ' + f2(es.p95 * sigPx * 1000) + TX(' mm · สมมติ σ centroid ', ' mm · assumed centroid σ ') + sigPx + TX(' px · เปรียบเทียบ layout เท่านั้น', ' px · for comparing layouts only') : TX('ไม่มีบริเวณที่เห็น ≥ 2 กล้อง', 'No region seen by ≥ 2 cameras')]
+  ];
+  $('cards').innerHTML = cards.map((c) => '<div class="card"><div class="lab">' + c[0] + '</div><div class="v">' + c[1] + '</div><div class="note">' + c[2] + '</div></div>').join('');
+  const bt = (act, val, label, on) => '<button class="btn' + (on ? ' on' : '') + '" data-act="' + act + '" data-v="' + val + '">' + label + '</button>';
+  $('viewBtns').innerHTML = bt('view', 'opt', TX('ตำแหน่งที่ปรับแล้ว', 'Optimised positions'), S.view === 'opt') + bt('view', 'base', TX('วางเรียงรอบห้อง', 'Perimeter layout'), S.view === 'base') + bt('view', 'man', TX('ตำแหน่งที่ปรับเอง', 'Manual positions'), S.view === 'man');
+  $('modeBtns').innerHTML = bt('mode', 'plane', TX('ลากบนระนาบพื้น', 'Drag on floor plane'), S.dragMode === 'plane') + bt('mode', 'height', TX('ลากปรับความสูง', 'Drag to change height'), S.dragMode === 'height')
+    + bt('cov3d', '', S.cov3d ? TX('coverage 3D: เปิด', '3D coverage: on') : TX('coverage 3D: ปิด', '3D coverage: off'), S.cov3d) + bt('slicetog', '', S.showSlice ? TX('แผ่น coverage: เปิด', 'Coverage slice: on') : TX('แผ่น coverage: ปิด', 'Coverage slice: off'), S.showSlice) + bt('slicemode', '', S.sliceMode === 'err' ? TX('สี slice: error 3D', 'Slice colour: 3D error') : TX('สี slice: จำนวนกล้อง', 'Slice colour: camera count'), S.sliceMode === 'err')
+    + bt('resetview', '', TX('รีเซ็ตมุมมอง', 'Reset view'), false)
+    + (S.cov3d ? bt('gap', '', S.cov3dGap ? TX('แสดง: จุดบอด (< ' + P.k + ' กล้อง)', 'Show: blind spots (< ' + P.k + ' cameras)') : TX('แสดง: ถึงเกณฑ์ (≥ ' + P.k + ' กล้อง)', 'Show: meets threshold (≥ ' + P.k + ' cameras)'), S.cov3dGap) : '')
+    + '<button class="btn" data-act="resetman"' + (sim.man ? '' : ' disabled') + '>' + TX('ย้อนกลับเป็นตำแหน่งที่ปรับแล้ว', 'Revert to optimised positions') + '</button>';
+  const k = P.k; let lg;
+  if (S.sliceMode === 'err') {
+    const m = (es.n ? es.med : 0.001) * sigPx * 1000, e = ERRE.map((x) => (x * m).toFixed(2));
+    lg = [[TX('เห็น < 2 กล้อง', 'Seen by < 2 cameras'), '#E4E7EA'], ['≤ ' + e[0] + ' mm', ERRPAL[0]], ['≤ ' + e[1] + ' mm', ERRPAL[1]], ['≤ ' + e[2] + ' mm', ERRPAL[2]], ['≤ ' + e[3] + ' mm', ERRPAL[3]], ['> ' + e[3] + ' mm', ERRPAL[4]]];
+  } else {
+    lg = [[TX('0 กล้อง', '0 cameras'), cellColor(0, k)]];
+    if (k >= 2) lg.push([k === 2 ? TX('1 กล้อง', '1 camera') : '1–' + (k - 1) + TX(' กล้อง', ' cameras'), cellColor(1, k)]);
+    lg.push([k + TX(' กล้อง (ถึงเกณฑ์)', ' cameras (meets threshold)'), cellColor(k, k)], [(k + 1) + TX(' กล้อง', ' cameras'), cellColor(k + 1, k)], [(k + 2) + TX('+ กล้อง', '+ cameras'), cellColor(k + 3, k)]);
+  }
+  if (S.ancOn && S.brand === 'optitrack') lg.push([TX('anchor marker ที่แนะนำ (วงแหวน = ตัวที่เลือก)', 'Suggested anchor marker (ring = selected)'), '#ab1d79']);
+  lg.push([TX('รังสีที่เห็น marker', 'Ray to a camera that sees the marker'), '#C2410C'], [TX('กล้องที่ไม่เห็น', 'Camera that does not see it'), '#9AA3AB']);
+  $('legend').innerHTML = lg.map((g) => '<div><span class="sw" style="background:' + g[1] + '"></span>' + g[0] + '</div>').join('');
+  const sl = $('slice'); sl.max = G.th.toFixed(2);
+  const sliceZ = Math.min(G.th, Math.max(0, parseFloat(S.sliceZ) || 0));
+  if (document.activeElement !== sl) sl.value = sliceZ;
+  $('sliceLab').textContent = 'z = ' + f2(sliceZ) + ' m';
+  const mk = getMk(), Pm = livePix(P), ma = markerAnalysis(res, Pm, mk, sigPx);
+  renderMarkerUI(Pm, mk, ma, sigPx);
+  $('mkStale').hidden = sim.sig === sigOf(parse());
+  const ancAvail = S.brand === 'optitrack';
+  $('ancPanel').hidden = !ancAvail;
+  const anc = (ancAvail && S.ancOn) ? getAnchors(res, Pm, G, sigPx) : null;
+  if (anc) renderAnchorUI(anc, res, Pm); else { $('ancCards').innerHTML = ''; $('ancTable').innerHTML = ''; $('ancNote').textContent = ''; $('ancSelRow').innerHTML = ''; $('ancDetail').textContent = ''; }
+  res.anc = anc && !anc.none ? anc.set : null;
+  if (res.anc) { const a = res.anc[Math.min(S.ancSel, res.anc.length - 1)]; res.ancOk = prepCams(res.cams, Pm).map((pc) => visCode(pc, Pm, a.x, a.y, a.z) === 0); }
+  renderStage(res, P, G, sliceZ, mk, ma);
+  renderPlan(res, P, G, sliceZ, mk, ma);
+  const rows = res.cams.map((c, i) => '<div class="tr"><span style="font-weight:600">' + (i + 1) + '</span><span>' + f2(c.x) + '</span><span>' + f2(c.y) + '</span><span>' + f2(c.z) + '</span><span>' + (((c.yaw * 180 / Math.PI) % 360 + 360) % 360).toFixed(0) + '</span><span>' + (c.pitch * 180 / Math.PI).toFixed(0) + '</span><span>' + (c.roll ? 90 : 0) + '</span></div>').join('');
+  $('camTable').innerHTML = '<div class="tr h"><span>#</span><span>x (m)</span><span>y (m)</span><span>z (m)</span><span>yaw (°)</span><span>pitch (°)</span><span>roll (°)</span></div>' + rows;
+  const sel = Math.min(S.selected, res.cams.length - 1);
+  $('chips').innerHTML = res.cams.map((c, i) => '<button class="chip' + (i === sel ? ' on' : '') + '" data-act="chip" data-v="' + i + '">' + (i + 1) + '</button>').join('');
+  syncSelPanel(res, P, sel);
+  $('stale').hidden = !(sim.sig !== sigOf(parse()));
+}
+
+const stat = (c) => [TX('เห็น', 'Visible'), TX('อยู่หลัง/ใกล้กล้องเกินไป', 'Behind / too close'), TX('นอก FOV', 'Outside FOV'), TX('ไกลเกินระยะผู้ผลิต', 'Beyond manufacturer range'), TX('pixel ต่ำกว่าเกณฑ์', 'Below pixel threshold')][c];
+function renderMarkerUI(P, mk, ma, sigPx) {
+  [['x', P.W, mk.x], ['y', P.L, mk.y], ['z', P.H, mk.z]].forEach((a) => {
+    const el = $('mk-' + a[0]); el.max = a[1].toFixed(2); if (document.activeElement !== el) el.value = a[2];
+    $('mkt-' + a[0]).textContent = f2(a[2]);
+  });
+  const rb = $('mkRays'); rb.textContent = S.showRays ? TX('เส้นรังสี: เปิด', 'Rays: on') : TX('เส้นรังสี: ปิด', 'Rays: off'); rb.classList.toggle('on', !!S.showRays);
+  const vis = ma.rows.filter((r) => r.code === 0), n = ma.n;
+  let pxMean = 0, pxMin = 1e9, pxMax = 0, arMin = 1e9;
+  vis.forEach((r) => { pxMean += r.px / n; pxMin = Math.min(pxMin, r.px); pxMax = Math.max(pxMax, r.px); arMin = Math.min(arMin, r.area); });
+  const cards = [
+    [TX('กล้องที่เห็น marker', 'Cameras that see the marker'), n + ' / ' + P.N, n >= P.k ? TX('ถึงเกณฑ์ k = ', 'Meets threshold k = ') + P.k : TX('ต่ำกว่าเกณฑ์ k = ', 'Below threshold k = ') + P.k + (n < 2 ? TX(' · ต้อง ≥ 2 กล้องจึงคำนวณตำแหน่ง 3D ได้', ' · at least 2 cameras are needed to compute a 3D position') : '')],
+    [TX('ขนาดภาพ marker (เส้นผ่านศูนย์กลาง)', 'Marker image size (diameter)'), n ? f1(pxMean) + ' px' : '—', n ? TX('น้อยสุด ', 'min ') + f1(pxMin) + TX(' · มากสุด ', ' · max ') + f1(pxMax) + TX(' px · พื้นที่ต่ำสุด ', ' px · min area ') + f1(arMin) + TX(' px² (เกณฑ์ ≥ ', ' px² (threshold ≥ ') + P.minPx + ' px²)' : TX('ไม่มีกล้องที่เห็น', 'No camera sees it')],
+    [TX('มุมตัดสูงสุดระหว่างรังสี', 'Widest angle between rays'), n >= 2 ? f1(ma.maxAng) + '°' : '—', TX('มุมตัดกว้างให้ความแม่นในแนวลึกดีกว่า รังสีเกือบขนานให้ error สูง', 'A wider intersection angle gives better depth accuracy; nearly parallel rays give high error')],
+    [TX('Error 3D คาดการณ์ (RMS)', 'Predicted 3D error (RMS)'), ma.rms ? f2(ma.rms * 1000) + ' mm' : '—', ma.rms ? 'σx ' + f2(ma.sx * 1000) + ' · σy ' + f2(ma.sy * 1000) + ' · σz ' + f2(ma.sz * 1000) + ' mm' : (ma.degenerate ? TX('รังสีเกือบขนานกัน คำนวณไม่ได้', 'Rays nearly parallel, cannot compute') : TX('ต้องมีกล้องที่เห็น ≥ 2 ตัว', 'Needs at least 2 cameras that see it'))],
+    [TX('Residual คาดการณ์ (RMS ต่อรังสี)', 'Predicted residual (RMS per ray)'), ma.resid ? f2(ma.resid * 1000) + ' mm' : '—', ma.resid ? TX('ระยะที่รังสีพลาดจุดที่ triangulate ได้ ที่ σ centroid ', 'Distance by which rays miss the triangulated point, at centroid σ ') + sigPx + ' px' : TX('ต้องมีกล้องที่เห็น ≥ 2 ตัว', 'Needs at least 2 cameras that see it')]
+  ];
+  $('mkCards').innerHTML = cards.map((c) => '<div class="card"><div class="lab">' + c[0] + '</div><div class="v" style="font-size:24px">' + c[1] + '</div><div class="note">' + c[2] + '</div></div>').join('');
+  const hd = '<div class="tr tr7 h"><span>' + TX('กล้อง', 'Cam') + '</span><span>' + TX('สถานะ', 'Status') + '</span><span>' + TX('ระยะ (m)', 'Distance (m)') + '</span><span>marker (px)</span><span>' + TX('พื้นที่ (px)', 'Area (px)') + '</span><span>' + TX('มุมจากแกน (°)', 'Off-axis (°)') + '</span><span>σ⊥ (mm)</span></div>';
+  $('mkTable').innerHTML = hd + ma.rows.map((r) => '<div class="tr tr7' + (r.code ? ' off' : '') + '"><span style="font-weight:600">' + (r.i + 1) + '</span><span class="' + (r.code ? 'noc' : 'okc') + '">' + stat(r.code) + '</span><span>' + f2(r.r) + '</span><span>' + (r.d > 0.001 ? f1(r.px) : '—') + '</span><span>' + (r.d > 0.001 ? f1(r.area) : '—') + '</span><span>' + f1(r.off) + '</span><span>' + f2(r.sig * 1000) + '</span></div>').join('');
+  $('mkNote').textContent = TX('โมเดล: pinhole ขนาดภาพ = f × D ÷ ความลึก (f เฉลี่ยจาก FOV กับ resolution) · σ⊥ = ความไม่แน่นอนตั้งฉากรังสี = ระยะ × σ centroid ÷ f · Error 3D มาจาก least-squares triangulation ถ่วงน้ำหนักตามระยะ · Residual คาดการณ์ = √(σ⊥² เฉลี่ย × (2n−3)/n) ไม่ใช่ค่า calibration residual ของ Motive หรือ QTM และไม่รวม occlusion, reflection, ความคลาดเคลื่อนจากการ calibrate · σ centroid เป็นค่าสมมติของผู้ใช้ ผู้ผลิตไม่ได้ระบุ ใช้เปรียบเทียบ layout เท่านั้น',
+    'Model: pinhole, image size = f × D ÷ depth (f averaged from FOV and resolution) · σ⊥ = uncertainty perpendicular to the ray = distance × centroid σ ÷ f · 3D error comes from least-squares triangulation weighted by distance · Predicted residual = √(mean σ⊥² × (2n−3)/n) · This is not Motive\'s or QTM\'s calibration residual and ignores occlusion, reflection and calibration error · Centroid σ is a user assumption (manufacturers do not specify it); use for comparing layouts only');
+}
+
+let selKey = '';
+function syncSelPanel(res, P, sel) {
+  const c = res.cams[sel], box = $('selPanel');
+  if (!c) { box.innerHTML = ''; return; }
+  const defs = [['x', 'x (m)', 0, P.W, 0.05, c.x, f2(c.x)], ['y', 'y (m)', 0, P.L, 0.05, c.y, f2(c.y)], ['z', 'z (m)', 0.2, P.H, 0.05, c.z, f2(c.z)],
+    ['yaw', 'yaw (°)', 0, 360, 1, ((c.yaw * 180 / Math.PI) % 360 + 360) % 360, (((c.yaw * 180 / Math.PI) % 360 + 360) % 360).toFixed(0)],
+    ['pitch', 'pitch (°)', -60, 85, 1, c.pitch * 180 / Math.PI, (c.pitch * 180 / Math.PI).toFixed(0)]];
+  const key = sim.id + ':' + sel + ':' + res.cams.length;
+  if (key !== selKey) {
+    selKey = key;
+    box.innerHTML = '<div style="font-size:14px;color:var(--ink2)">' + TX('กล้อง #', 'Camera #') + (sel + 1) + TX(' · แก้ค่าด้วย slider แล้วผลคำนวณใหม่ทันที (เข้าโหมดตำแหน่งที่ปรับเอง)', ' · edit with the sliders and results update immediately (enters manual-positions mode)') + '</div><div class="slgrid">'
+      + defs.map((d) => '<div class="sl"><label for="sl-' + d[0] + '">' + d[1] + '</label><input id="sl-' + d[0] + '" type="range" data-sl="' + d[0] + '" min="' + d[2] + '" max="' + d[3] + '" step="' + d[4] + '" value="' + d[5] + '"><span class="t" id="slt-' + d[0] + '">' + d[6] + '</span></div>').join('')
+      + '</div><div class="row" id="selActs"></div>';
+  }
+  defs.forEach((d) => { const el = $('sl-' + d[0]); if (el && document.activeElement !== el) el.value = d[5]; const t = $('slt-' + d[0]); if (t) t.textContent = d[6]; });
+  $('selActs').innerHTML = '<button class="btn" data-act="aimc">' + TX('หันเข้าหาศูนย์กลางพื้นที่', 'Aim at area centre') + '</button><button class="btn' + (c.roll ? ' on' : '') + '" data-act="roll">' + (c.roll ? 'roll 90° (portrait)' : 'roll 0° (landscape)') + '</button>';
+}
+
+/* ---------- 3D stage ---------- */
+let geomKey = '';
+function renderStage(res, P, G, sliceZ, mk, ma) {
+  kk = 78 / (Math.hypot(P.W, P.L) + 0.4 * P.H);
+  const cq = (v) => (v * kk).toFixed(3) + 'cqw';
+  const T = (x, y, z) => 'translate3d(' + cq(x - P.W / 2) + ',' + cq(y - P.L / 2) + ',' + cq(z) + ')';
+  const stage = $('stage');
+  stage.style.setProperty('--az', S.az.toFixed(2) + 'deg'); stage.style.setProperty('--tilt', S.tilt.toFixed(2) + 'deg');
+  const gk = sim.id + ':' + P.W + ':' + P.L + ':' + P.H + ':' + P.capH + ':' + P.margin;
+  if (gk !== geomKey) {
+    geomKey = gk;
+    const fl = $('floor'); fl.style.cssText = 'width:' + cq(P.W) + ';height:' + cq(P.L) + ';transform:' + T(0, 0, 0) + ';background:#fff;border:2px solid #14181B';
+    const wall = (w, tf) => '<div class="e" style="width:' + cq(w) + ';height:' + cq(P.H) + ';transform:' + tf + ';background:rgba(20,24,27,0.035);border:1px solid #AEB5BC"></div>';
+    const tface = (w, tf) => '<div class="e" style="width:' + cq(w) + ';height:' + cq(P.capH) + ';transform:' + tf + ';border:1.5px dashed ' + ACC + '"></div>';
+    const tw = G.tw, tl = G.tl;
+    $('faces').innerHTML = wall(P.W, T(0, 0, P.H) + ' rotateX(-90deg)') + wall(P.W, T(0, P.L, P.H) + ' rotateX(-90deg)')
+      + wall(P.L, T(0, 0, P.H) + ' rotateZ(90deg) rotateX(-90deg)') + wall(P.L, T(P.W, 0, P.H) + ' rotateZ(90deg) rotateX(-90deg)')
+      + '<div class="e" style="width:' + cq(tw) + ';height:' + cq(tl) + ';transform:' + T(P.margin, P.margin, P.capH) + ';border:1.5px dashed ' + ACC + '"></div>'
+      + tface(tw, T(P.margin, P.margin, P.capH) + ' rotateX(-90deg)') + tface(tw, T(P.margin, P.L - P.margin, P.capH) + ' rotateX(-90deg)')
+      + tface(tl, T(P.margin, P.margin, P.capH) + ' rotateZ(90deg) rotateX(-90deg)') + tface(tl, T(P.W - P.margin, P.margin, P.capH) + ' rotateZ(90deg) rotateX(-90deg)');
+  }
+  // coverage slice as a canvas texture
+  const cv = $('slicecv'), kz = Math.min(G.nz - 1, Math.max(0, Math.floor(sliceZ / G.cz)));
+  cv.style.display = S.showSlice ? 'block' : 'none';
+  cv.style.width = cq(G.tw); cv.style.height = cq(G.tl); cv.style.transform = T(P.margin, P.margin, sliceZ);
+  if (S.showSlice) {
+    if (cv.width !== G.nx || cv.height !== G.ny) { cv.width = G.nx; cv.height = G.ny; }
+    const ctx = cv.getContext('2d'), img = ctx.createImageData(G.nx, G.ny), pal = {}, cols = sliceColors(res, P, G, kz);
+    for (let j = 0; j < G.ny; j++) for (let i = 0; i < G.nx; i++) {
+      const hx = cols[j * G.nx + i], rgb = pal[hx] || (pal[hx] = hexRgb(hx)), o = 4 * (j * G.nx + i);
+      img.data[o] = rgb[0]; img.data[o + 1] = rgb[1]; img.data[o + 2] = rgb[2]; img.data[o + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  // coverage point cloud
+  let ptsHtml = '';
+  if (S.cov3d) {
+    const step = Math.max(1, Math.ceil(Math.cbrt(G.n / 1800))), sz = Math.max(0.3, Math.min(G.cx, G.cy, G.cz) * step * 0.6 * kk).toFixed(3) + 'cqw';
+    const rot = ' rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--tilt) * -1)) translate(-50%,-50%)';
+    let shown = 0, total = 0;
+    for (let kz2 = 0; kz2 < G.nz; kz2 += step) for (let j = 0; j < G.ny; j += step) for (let i = 0; i < G.nx; i += step) {
+      const idx = (kz2 * G.ny + j) * G.nx + i, c = res.cov[idx]; total++;
+      if (S.cov3dGap ? c >= P.k : c < P.k) continue;
+      const color = S.cov3dGap ? (c === 0 ? '#9A3412' : '#E3A53B') : cellColor(c, P.k);
+      ptsHtml += '<div class="e" style="width:' + sz + ';height:' + sz + ';opacity:.7;background:' + color + ';transform:' + T(G.xs[idx], G.ys[idx], G.zs[idx]) + rot + '"></div>'; shown++;
+    }
+    $('covInfo').hidden = false;
+    $('covInfo').textContent = TX((S.cov3dGap ? 'จุดบอด (เห็น < ' + P.k + ' กล้อง): ' : 'บริเวณที่เห็น ≥ ' + P.k + ' กล้อง: ') + shown + ' จุด จากตัวอย่าง ' + total + ' จุด (สุ่มทุก ' + step + ' voxel ต่อแกน) · ถ้าไม่มีจุดแสดงว่าไม่มีบริเวณนั้นเลย',
+      (S.cov3dGap ? 'Blind spots (seen by < ' + P.k + ' cameras): ' : 'Region seen by ≥ ' + P.k + ' cameras: ') + shown + ' points out of ' + total + ' sampled (every ' + step + ' voxel(s) per axis) · if no points are shown, that region does not exist');
+  } else $('covInfo').hidden = true;
+  $('pts').innerHTML = ptsHtml;
+  // lines + dots
+  const seg = (a, b, color, th, sty) => {
+    const dx = b[0] - a[0], dy = b[1] - a[1], dz = b[2] - a[2], len = Math.hypot(dx, dy, dz);
+    if (len < 1e-6) return '';
+    const al = Math.atan2(dy, dx) * 180 / Math.PI, el = Math.asin(dz / len) * 180 / Math.PI;
+    return '<div class="e" style="width:' + cq(len) + ';height:0;border-top:' + th + 'px ' + (sty || 'solid') + ' ' + color + ';transform:' + T(a[0], a[1], a[2]) + ' rotateZ(' + al.toFixed(2) + 'deg) rotateY(' + (-el).toFixed(2) + 'deg)"></div>';
+  };
+  const tH = Math.tan(P.hfov * Math.PI / 360), tV = Math.tan(P.vfov * Math.PI / 360), selIdx = Math.min(S.selected, res.cams.length - 1);
+  let lines = '', dots = '';
+  if (S.showRays) ma.rows.forEach((r) => {
+    const c = res.cams[r.i];
+    lines += seg([c.x, c.y, c.z], [mk.x, mk.y, mk.z], r.code === 0 ? '#C2410C' : '#9AA3AB', r.code === 0 ? 1.6 : 1, r.code === 0 ? 'solid' : 'dashed');
+  });
+  res.cams.forEach((c, idx) => {
+    const b = basis(c), isSel = idx === selIdx;
+    lines += '<div class="e" style="width:1px;height:' + cq(c.z) + ';background:rgba(20,24,27,0.35);transform:' + T(c.x, c.y, c.z) + ' rotateX(-90deg)"></div>';
+    lines += seg([c.x, c.y, c.z], [c.x + b.fx, c.y + b.fy, c.z + b.fz], isSel ? ACC : '#14181B', 2);
+    if (isSel) {
+      const D = Math.min(P.range, 3.0), tr = c.roll ? tV : tH, tu = c.roll ? tH : tV, pts = [];
+      [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach((ab) => {
+        const dx = b.fx + ab[0] * tr * b.rx + ab[1] * tu * b.ux, dy = b.fy + ab[0] * tr * b.ry + ab[1] * tu * b.uy, dz = b.fz + ab[1] * tu * b.uz;
+        pts.push([c.x + D * dx, c.y + D * dy, c.z + D * dz]);
+      });
+      for (let q = 0; q < 4; q++) lines += seg([c.x, c.y, c.z], pts[q], ACC, 1.5) + seg(pts[q], pts[(q + 1) % 4], ACC, 1.5);
+    }
+    dots += '<div class="dot" data-cam="' + idx + '" style="transform:' + T(c.x, c.y, c.z) + ' rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--tilt) * -1)) translate(-50%,-50%);'
+      + (isSel ? 'background:' + ACC + ';box-shadow:0 0 0 3px ' + ACC : '') + '">' + (idx + 1) + '</div>';
+  });
+  if (mk.z > 0.02) lines += '<div class="e" style="width:1px;height:' + cq(mk.z) + ';background:rgba(194,65,12,0.5);transform:' + T(mk.x, mk.y, mk.z) + ' rotateX(-90deg)"></div>';
+  dots += '<div class="dot" data-mk="1" title="' + TX('marker ทดสอบ', 'Test marker') + '" style="width:20px;height:20px;line-height:16px;background:#C2410C;transform:' + T(mk.x, mk.y, mk.z) + ' rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--tilt) * -1)) translate(-50%,-50%)">M</div>';
+  if (res.anc && S.ancRays) {
+    const a = res.anc[Math.min(S.ancSel, res.anc.length - 1)], pcs = prepCams(res.cams, P);
+    pcs.forEach((pc, i) => { const ok = res.ancOk[i]; lines += seg([pc.x, pc.y, pc.z], [a.x, a.y, a.z], ok ? '#ab1d79' : '#9AA3AB', ok ? 1.6 : 1, ok ? 'solid' : 'dashed'); });
+  }
+  (res.anc || []).forEach((a, i) => {
+    const sel = i === Math.min(S.ancSel, res.anc.length - 1);
+    lines += '<div class="e" style="width:1px;height:' + cq(a.z) + ';background:rgba(171,29,121,0.45);transform:' + T(a.x, a.y, a.z) + ' rotateX(-90deg)"></div>';
+    dots += '<div class="dot" data-anc="' + i + '" title="' + TX('anchor marker ที่แนะนำ', 'Suggested anchor marker') + ' A' + (i + 1) + '" style="width:22px;height:22px;line-height:18px;background:#ab1d79;' + (sel ? 'box-shadow:0 0 0 3px #ef94ca;' : '') + 'transform:' + T(a.x, a.y, a.z) + ' rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--tilt) * -1)) translate(-50%,-50%)">A' + (i + 1) + '</div>';
+  });
+  $('lines').innerHTML = lines; $('dots').innerHTML = dots;
+}
+
+/* ---------- 2D plan ---------- */
+function renderPlan(res, P, G, sliceZ, mk, ma) {
+  const cv = $('plan'), W = 900, H = Math.round(900 * P.L / P.W);
+  if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+  const ctx = cv.getContext('2d'), s = W / P.W, kz = Math.min(G.nz - 1, Math.max(0, Math.floor(sliceZ / G.cz)));
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+  const cols = sliceColors(res, P, G, kz);
+  for (let j = 0; j < G.ny; j++) for (let i = 0; i < G.nx; i++) {
+    ctx.fillStyle = cols[j * G.nx + i];
+    ctx.fillRect((P.margin + i * G.cx) * s, (P.margin + j * G.cy) * s, G.cx * s + 0.6, G.cy * s + 0.6);
+  }
+  const wr = Math.min(2.0, P.range / 3) * s;
+  res.cams.forEach((c) => {
+    const span = (c.roll ? P.vfov : P.hfov) * Math.PI / 180;
+    ctx.beginPath(); ctx.moveTo(c.x * s, c.y * s); ctx.arc(c.x * s, c.y * s, wr, c.yaw - span / 2, c.yaw + span / 2); ctx.closePath();
+    ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill();
+  });
+  if (S.showRays) ma.rows.forEach((r) => {
+    const c = res.cams[r.i];
+    ctx.beginPath(); ctx.moveTo(c.x * s, c.y * s); ctx.lineTo(mk.x * s, mk.y * s);
+    ctx.setLineDash(r.code === 0 ? [] : [5, 4]); ctx.lineWidth = r.code === 0 ? 1.8 : 1; ctx.strokeStyle = r.code === 0 ? '#C2410C' : 'rgba(90,100,112,0.6)'; ctx.stroke();
+  });
+  ctx.setLineDash([]);
+  if (res.anc && S.ancRays) {
+    const a = res.anc[Math.min(S.ancSel, res.anc.length - 1)], pcs = prepCams(res.cams, P);
+    pcs.forEach((pc, i) => { const ok = res.ancOk[i]; ctx.beginPath(); ctx.moveTo(pc.x * s, pc.y * s); ctx.lineTo(a.x * s, a.y * s); ctx.setLineDash(ok ? [] : [5, 4]); ctx.lineWidth = ok ? 1.8 : 1; ctx.strokeStyle = ok ? '#ab1d79' : 'rgba(90,100,112,0.6)'; ctx.stroke(); });
+    ctx.setLineDash([]);
+  }
+  res.cams.forEach((c, i) => {
+    ctx.beginPath(); ctx.arc(c.x * s, c.y * s, 11, 0, 2 * Math.PI); ctx.fillStyle = i === Math.min(S.selected, res.cams.length - 1) ? ACC : '#14181B'; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = '600 11px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(i + 1), c.x * s, c.y * s + 0.5);
+  });
+  (res.anc || []).forEach((a, i) => {
+    const sel = i === Math.min(S.ancSel, res.anc.length - 1);
+    ctx.beginPath(); ctx.arc(a.x * s, a.y * s, 10, 0, 2 * Math.PI); ctx.fillStyle = '#ab1d79'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = sel ? '#ef94ca' : '#fff'; ctx.stroke();
+    if (sel) { ctx.beginPath(); ctx.arc(a.x * s, a.y * s, 14, 0, 2 * Math.PI); ctx.lineWidth = 2; ctx.strokeStyle = '#ef94ca'; ctx.stroke(); }
+    ctx.fillStyle = '#fff'; ctx.font = '600 10px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('A' + (i + 1), a.x * s, a.y * s + 0.5);
+  });
+  ctx.beginPath(); ctx.arc(mk.x * s, mk.y * s, 9, 0, 2 * Math.PI); ctx.fillStyle = '#C2410C'; ctx.fill();
+  ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
+  ctx.fillStyle = '#fff'; ctx.font = '600 11px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('M', mk.x * s, mk.y * s + 0.5);
+}
+
+/* ======================= 3D interaction ======================= */
+function pointerToWorld(m, rect, zPlane) {
+  const P = sim.P, th = S.tilt * Math.PI / 180, ph = S.az * Math.PI / 180, ppm = kk * rect.width / 100;
+  const u = (m.x - rect.left - rect.width / 2) / ppm, v = (m.y - rect.top - rect.height * 0.58) / ppm;
+  const Y1 = (v + zPlane * Math.sin(th)) / Math.cos(th), X1 = u;
+  return { x: X1 * Math.cos(ph) + Y1 * Math.sin(ph) + P.W / 2, y: -X1 * Math.sin(ph) + Y1 * Math.cos(ph) + P.L / 2 };
+}
+function startDrag(d) {
+  endDrag(); drag = d;
+  window.addEventListener('pointermove', onWinMove); window.addEventListener('pointerup', endDrag); window.addEventListener('pointercancel', endDrag);
+}
+function endDrag() {
+  window.removeEventListener('pointermove', onWinMove); window.removeEventListener('pointerup', endDrag); window.removeEventListener('pointercancel', endDrag);
+  drag = null; if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+  $('stage').style.cursor = 'grab';
+}
+function onWinMove(e) {
+  if (!drag) return; lastPtr = { x: e.clientX, y: e.clientY };
+  if (rafId) return;
+  rafId = requestAnimationFrame(() => { rafId = 0; processMove(); });
+}
+function processMove() {
+  const d = drag, m = lastPtr; if (!d || !m) return;
+  if (d.type === 'orbit') {
+    S.az = d.az + (m.x - d.x) * 0.4; S.tilt = Math.min(85, Math.max(10, d.tilt - (m.y - d.y) * 0.3));
+    const st = $('stage'); st.style.setProperty('--az', S.az.toFixed(2) + 'deg'); st.style.setProperty('--tilt', S.tilt.toFixed(2) + 'deg');
+    return;
+  }
+  const rectNow = $('stage').getBoundingClientRect();
+  if (d.type === 'mk') {
+    if (d.mode === 'height') { const ppm = kk * rectNow.width / 100, sinT = Math.sin(S.tilt * Math.PI / 180); setMk({ z: d.z0 - (m.y - d.y) / (ppm * sinT) }); }
+    else { const p = pointerToWorld(m, rectNow, d.z0); setMk({ x: p.x - d.offx, y: p.y - d.offy }); }
+    return;
+  }
+  if (d.mode === 'height') {
+    const ppm = kk * rectNow.width / 100, sinT = Math.sin(S.tilt * Math.PI / 180);
+    applyCam(d.i, { z: d.z0 - (m.y - d.y) / (ppm * sinT) });
+  } else {
+    const p = pointerToWorld(m, rectNow, d.z0);
+    applyCam(d.i, { x: p.x - d.offx, y: p.y - d.offy });
+  }
+}
+
+/* ======================= wiring ======================= */
+function captureStatic() { document.querySelectorAll('[data-en]').forEach((el) => { if (el.dataset.th === undefined) el.dataset.th = el.textContent; }); }
+function applyLang() {
+  document.documentElement.lang = S.lang;
+  document.querySelectorAll('[data-en]').forEach((el) => { el.textContent = S.lang === 'en' ? el.dataset.en : el.dataset.th; });
+  document.title = 'Prima Motion Capture Volume Planner';
+  const md = document.querySelector('meta[name=description]');
+  if (md) md.content = TX('Prima Motion Capture Volume Planner — เครื่องมือฟรีแบบ open source จากบริษัท พริมา โมชั่น จำกัด สำหรับช่วยวางแผนตำแหน่งกล้อง optical motion capture (OptiTrack, Qualisys, Vicon) ยินดีให้คำปรึกษาเพิ่มเติมสำหรับโครงการจริงที่ hello@primamotion.tech', 'Prima Motion Capture Volume Planner — a free, open-source tool from Prima Motion Co., Ltd. for planning optical motion capture camera placement (OptiTrack, Qualisys, Vicon). For advice on a real project, contact hello@primamotion.tech');
+  $('lang').value = S.lang;
+  selKey = '';
+  updateSpec(); updateRunUI();
+  if (sim) render();
+}
+function wire() {
+  captureStatic();
+  $('lang').addEventListener('change', (e) => { S.lang = e.target.value === 'en' ? 'en' : 'th'; try { localStorage.setItem('pm_lang', S.lang); } catch (err) { /* ignore */ } applyLang(); });
+  document.querySelectorAll('input[data-k]').forEach((el) => el.addEventListener('input', () => { S[el.dataset.k] = el.value; updateSpec(); if (el.dataset.live && sim) render(); }));
+  $('brand').addEventListener('change', (e) => { S.brand = e.target.value; S.model = curBrand().models[0].key; S.lens = 0; S.inRange = ''; S.inMk = String(curBrand().refD || 14); syncInputs(); updateSpec(); });
+  $('model').addEventListener('change', (e) => { S.model = e.target.value; S.lens = 0; S.inRange = ''; syncInputs(); updateSpec(); });
+  $('lens').addEventListener('change', (e) => { S.lens = parseInt(e.target.value, 10) || 0; updateSpec(); });
+  $('marker').addEventListener('change', (e) => { S.marker = e.target.value; S.inRange = ''; syncInputs(); updateSpec(); });
+  $('inTiers').addEventListener('change', (e) => { S.inTiers = e.target.value; updateSpec(); });
+  $('stagger').addEventListener('change', (e) => { S.stagger = e.target.checked; updateSpec(); });
+  $('wallOnly').addEventListener('change', (e) => { S.wallOnly = e.target.checked; updateSpec(); });
+  $('pixMode').addEventListener('change', (e) => { S.pixMode = e.target.value; updateSpec(); if (sim) render(); });
+  $('usePix').addEventListener('change', (e) => { S.usePix = e.target.checked; updateSpec(); if (sim) render(); });
+  $('mkPanel').addEventListener('input', (e) => { const k = e.target.dataset && e.target.dataset.mksl; if (k && sim) setMk({ [k]: parseFloat(e.target.value) }); });
+  const planPt = (e) => { const r = $('plan').getBoundingClientRect(); setMk({ x: (e.clientX - r.left) / r.width * sim.P.W, y: (e.clientY - r.top) / r.height * sim.P.L }); };
+  $('plan').addEventListener('pointerdown', (e) => { if (!sim || (e.pointerType === 'mouse' && e.button !== 0)) return; planPt(e); });
+  $('plan').addEventListener('pointermove', (e) => { if (sim && e.pointerType === 'mouse' && e.buttons === 1) planPt(e); });
+  $('ancOn').addEventListener('change', (e) => { S.ancOn = e.target.checked; if (sim) render(); });
+  $('run').addEventListener('click', run);
+  $('slice').addEventListener('input', (e) => { S.sliceZ = e.target.value; render(); });
+  $('selPanel').addEventListener('input', (e) => {
+    const k = e.target.dataset && e.target.dataset.sl; if (!k) return; const v = parseFloat(e.target.value);
+    editCam(k === 'yaw' ? { yaw: v * Math.PI / 180 } : k === 'pitch' ? { pitch: v * Math.PI / 180 } : { [k]: v });
+  });
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-act]'); if (!b || !sim) return;
+    const act = b.dataset.act, v = b.dataset.v;
+    if (act === 'view') { if (v === 'man') { if (!ensureManual()) return; } S.view = v; render(); }
+    else if (act === 'mode') { S.dragMode = v; render(); }
+    else if (act === 'cov3d') { S.cov3d = !S.cov3d; render(); }
+    else if (act === 'slicetog') { S.showSlice = !S.showSlice; render(); }
+    else if (act === 'gap') { S.cov3dGap = !S.cov3dGap; render(); }
+    else if (act === 'slicemode') { S.sliceMode = S.sliceMode === 'err' ? 'cov' : 'err'; render(); }
+    else if (act === 'mkreset') { S.mk = null; render(); }
+    else if (act === 'rays') { S.showRays = !S.showRays; render(); }
+    else if (act === 'anc') { S.ancSel = parseInt(v, 10) || 0; render(); }
+    else if (act === 'ancrays') { S.ancRays = !S.ancRays; render(); }
+    else if (act === 'resetview') { S.az = -35; S.tilt = 58; render(); }
+    else if (act === 'resetman') { live = null; sim.man = null; S.view = 'opt'; render(); }
+    else if (act === 'chip') { S.selected = parseInt(v, 10); render(); }
+    else if (act === 'aimc') { const res = currentRes(), c = res.cams[Math.min(S.selected, res.cams.length - 1)], P = sim.P;
+      editCam({ yaw: Math.atan2(P.L / 2 - c.y, P.W / 2 - c.x), pitch: Math.atan2(c.z - P.capH * 0.45, Math.hypot(P.W / 2 - c.x, P.L / 2 - c.y)) }); }
+    else if (act === 'roll') { const res = currentRes(), c = res.cams[Math.min(S.selected, res.cams.length - 1)]; editCam({ roll: c.roll ? 0 : 1 }); }
+  });
+  $('stage').addEventListener('pointerdown', (e) => {
+    if (!sim || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const ancEl = e.target.closest('[data-anc]'); if (ancEl) { S.ancSel = parseInt(ancEl.dataset.anc, 10) || 0; render(); e.preventDefault(); return; }
+    const dot = e.target.closest('[data-cam]'), stage = $('stage'), mkEl = e.target.closest('[data-mk]');
+    if (mkEl) {
+      const rect = stage.getBoundingClientRect(), mk0 = getMk(), m = { x: e.clientX, y: e.clientY }, p = pointerToWorld(m, rect, mk0.z);
+      startDrag({ type: 'mk', mode: (S.dragMode === 'height' || e.shiftKey) ? 'height' : 'plane', z0: mk0.z, y: m.y, offx: p.x - mk0.x, offy: p.y - mk0.y });
+      e.preventDefault(); return;
+    }
+    if (dot) {
+      const idx = parseInt(dot.dataset.cam, 10); if (!ensureManual()) return;
+      const rect = stage.getBoundingClientRect(), cam = live.cams[idx], m = { x: e.clientX, y: e.clientY }, p = pointerToWorld(m, rect, cam.z);
+      S.selected = idx; S.view = 'man'; render();
+      startDrag({ type: 'cam', i: idx, rect, mode: (S.dragMode === 'height' || e.shiftKey) ? 'height' : 'plane', z0: cam.z, y: m.y, offx: p.x - cam.x, offy: p.y - cam.y });
+      e.preventDefault();
+    } else { stage.style.cursor = 'grabbing'; startDrag({ type: 'orbit', x: e.clientX, y: e.clientY, az: S.az, tilt: S.tilt }); }
+  });
+}
+
+/* ======================= boot ======================= */
+wire(); syncInputs(); applyLang(); run();
+</script>
+</body>
+</html>
